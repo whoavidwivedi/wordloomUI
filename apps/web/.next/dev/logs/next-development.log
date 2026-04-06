@@ -40,3 +40,320 @@
 [00:22:27.614] Server  LOG     ✓ Compiled in 73ms
 [00:28:23.074] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
 [00:35:40.276] Server  LOG     ✓ Compiled in 35ms
+[00:55:16.688] Server  ERROR   ⨯ ./apps/web/app/try/page.tsx:10:1
+Module not found: Can't resolve 'motion/react'
+   8 | import Link from "next/link"
+   9 | import { useState, useTransition } from "react"
+> 10 | import { motion } from "motion/react"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 |
+  12 | import VantaBackground from "@/components/vanta-background"
+  13 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/app/try/page.tsx [Client Component Browser]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/app/try/page.tsx [Client Component SSR]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:55:16.690] Server  ERROR   ⨯ ./apps/web/app/try/page.tsx:10:1
+Module not found: Can't resolve 'motion/react'
+   8 | import Link from "next/link"
+   9 | import { useState, useTransition } from "react"
+> 10 | import { motion } from "motion/react"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 |
+  12 | import VantaBackground from "@/components/vanta-background"
+  13 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/app/try/page.tsx [Client Component Browser]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/app/try/page.tsx [Client Component SSR]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:55:16.694] Server  ERROR   ⨯ ./apps/web/app/try/page.tsx:10:1
+Module not found: Can't resolve 'motion/react'
+   8 | import Link from "next/link"
+   9 | import { useState, useTransition } from "react"
+> 10 | import { motion } from "motion/react"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 |
+  12 | import VantaBackground from "@/components/vanta-background"
+  13 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/app/try/page.tsx [Client Component Browser]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/app/try/page.tsx [Client Component SSR]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:55:16.698] Server  ERROR   ⨯ ./apps/web/app/try/page.tsx:10:1
+Module not found: Can't resolve 'motion/react'
+   8 | import Link from "next/link"
+   9 | import { useState, useTransition } from "react"
+> 10 | import { motion } from "motion/react"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 |
+  12 | import VantaBackground from "@/components/vanta-background"
+  13 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/app/try/page.tsx [Client Component Browser]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/app/try/page.tsx [Client Component SSR]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:55:16.702] Server  ERROR   ⨯ ./apps/web/app/try/page.tsx:10:1
+Module not found: Can't resolve 'motion/react'
+   8 | import Link from "next/link"
+   9 | import { useState, useTransition } from "react"
+> 10 | import { motion } from "motion/react"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 |
+  12 | import VantaBackground from "@/components/vanta-background"
+  13 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/app/try/page.tsx [Client Component Browser]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/app/try/page.tsx [Client Component SSR]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:55:16.704] Server  ERROR   ⨯ ./apps/web/app/try/page.tsx:10:1
+Module not found: Can't resolve 'motion/react'
+   8 | import Link from "next/link"
+   9 | import { useState, useTransition } from "react"
+> 10 | import { motion } from "motion/react"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 |
+  12 | import VantaBackground from "@/components/vanta-background"
+  13 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/app/try/page.tsx [Client Component Browser]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/app/try/page.tsx [Client Component SSR]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:55:16.705] Server  ERROR   ⨯ ./apps/web/app/try/page.tsx:10:1
+Module not found: Can't resolve 'motion/react'
+   8 | import Link from "next/link"
+   9 | import { useState, useTransition } from "react"
+> 10 | import { motion } from "motion/react"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 |
+  12 | import VantaBackground from "@/components/vanta-background"
+  13 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/app/try/page.tsx [Client Component Browser]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/app/try/page.tsx [Client Component SSR]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:55:16.706] Server  ERROR   ⨯ ./apps/web/app/try/page.tsx:10:1
+Module not found: Can't resolve 'motion/react'
+   8 | import Link from "next/link"
+   9 | import { useState, useTransition } from "react"
+> 10 | import { motion } from "motion/react"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 |
+  12 | import VantaBackground from "@/components/vanta-background"
+  13 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/app/try/page.tsx [Client Component Browser]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/app/try/page.tsx [Client Component SSR]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:55:16.707] Server  ERROR   ⨯ ./apps/web/app/try/page.tsx:10:1
+Module not found: Can't resolve 'motion/react'
+   8 | import Link from "next/link"
+   9 | import { useState, useTransition } from "react"
+> 10 | import { motion } from "motion/react"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 |
+  12 | import VantaBackground from "@/components/vanta-background"
+  13 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/app/try/page.tsx [Client Component Browser]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/app/try/page.tsx [Client Component SSR]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:55:16.708] Server  ERROR   ⨯ ./apps/web/app/try/page.tsx:10:1
+Module not found: Can't resolve 'motion/react'
+   8 | import Link from "next/link"
+   9 | import { useState, useTransition } from "react"
+> 10 | import { motion } from "motion/react"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 |
+  12 | import VantaBackground from "@/components/vanta-background"
+  13 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/app/try/page.tsx [Client Component Browser]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/app/try/page.tsx [Client Component SSR]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:55:16.709] Server  ERROR   ⨯ ./apps/web/app/try/page.tsx:10:1
+Module not found: Can't resolve 'motion/react'
+   8 | import Link from "next/link"
+   9 | import { useState, useTransition } from "react"
+> 10 | import { motion } from "motion/react"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 |
+  12 | import VantaBackground from "@/components/vanta-background"
+  13 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/app/try/page.tsx [Client Component Browser]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/app/try/page.tsx [Client Component SSR]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:55:16.710] Server  ERROR   ⨯ ./apps/web/app/try/page.tsx:10:1
+Module not found: Can't resolve 'motion/react'
+   8 | import Link from "next/link"
+   9 | import { useState, useTransition } from "react"
+> 10 | import { motion } from "motion/react"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 |
+  12 | import VantaBackground from "@/components/vanta-background"
+  13 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/app/try/page.tsx [Client Component Browser]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/app/try/page.tsx [Client Component SSR]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:55:16.713] Server  LOG     ✓ Compiled in 300ms
+[00:55:16.953] Browser ERROR   ./apps/web/app/try/page.tsx:10:1
+Module not found: Can't resolve 'motion/react'
+   8 | import Link from "next/link"
+   9 | import { useState, useTransition } from "react"
+> 10 | import { motion } from "motion/react"
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 |
+  12 | import VantaBackground from "@/components/vanta-background"
+  13 |
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/app/try/page.tsx [Client Component Browser]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/app/try/page.tsx [Client Component SSR]
+    ./apps/web/app/try/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:55:40.459] Server  LOG     ✓ Compiled in 382ms
+[00:57:20.381] Server  LOG     ✓ Compiled in 188ms
+[00:58:09.158] Server  LOG     ✓ Compiled in 189ms
+[01:00:02.939] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:00:27.877] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:00:35.363] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:00:36.748] Server  LOG     ✓ Compiled in 131ms
+[01:00:51.185] Server  LOG     ✓ Compiled in 155ms
