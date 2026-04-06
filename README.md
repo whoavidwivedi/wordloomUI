@@ -6,11 +6,12 @@ Generate lowercase names from a CMUdict-derived English letter-transition model,
 
 ```sh
 bun install
-bun run derive:model
 bun run build
 bun test
 node dist/index.mjs --help
 ```
+
+The checked-in generated model files are already included in the repo and in the published package, so normal users do not need to run `bun run derive:model`.
 
 ## Usage
 
@@ -41,7 +42,9 @@ If a query has no matches, the CLI prints `No results found.` instead of an empt
 
 The generator is derived from [CMUdict](https://github.com/cmusphinx/cmudict), the Carnegie Mellon Pronouncing Dictionary maintained by Carnegie Mellon University.
 
-`bun run derive:model` downloads the current `cmudict.dict` file and Princeton WordNet database, then generates [bin/cmudict-model.ts](./bin/cmudict-model.ts) and [bin/wordnet-definitions.ts](./bin/wordnet-definitions.ts).
+The CLI reads checked-in generated data from [bin/cmudict-model.ts](./bin/cmudict-model.ts) and [bin/wordnet-definitions.ts](./bin/wordnet-definitions.ts), so installed users can run `nameforge` immediately.
+
+`bun run derive:model` is a maintainer workflow. It downloads the current `cmudict.dict` file and Princeton WordNet database, regenerates those checked-in files, and formats the generated output.
 
 This means:
 

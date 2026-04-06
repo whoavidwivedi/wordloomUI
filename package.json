@@ -24,7 +24,7 @@
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
-    "derive:model": "node scripts/derive-cmudict-model.mjs",
+    "derive:model": "node scripts/derive-cmudict-model.mjs && oxfmt bin/cmudict-model.ts bin/wordnet-definitions.ts",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "lint": "oxlint .",
