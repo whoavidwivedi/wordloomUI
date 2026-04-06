@@ -1,19 +1,21 @@
 {
-  "name": "starter-template",
+  "name": "nameforge",
   "version": "0.1.0",
   "private": true,
-  "description": "A reusable Bun + TypeScript starter template for CLI projects.",
+  "description": "Generate source-backed lowercase names from a CMUdict-derived transition model.",
   "keywords": [
     "bun",
     "cli",
-    "starter",
-    "template",
-    "tsdown",
+    "cmudict",
+    "generator",
+    "name",
+    "nameforge",
+    "phonotactics",
     "typescript"
   ],
   "license": "MIT",
   "bin": {
-    "starter-template": "./dist/index.mjs"
+    "nameforge": "./dist/index.mjs"
   },
   "files": [
     "dist"
@@ -22,6 +24,7 @@
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
+    "derive:model": "node scripts/derive-cmudict-model.mjs",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "lint": "oxlint .",
@@ -30,6 +33,7 @@
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
+    "@types/bun": "^1.3.11",
     "@types/node": "^25.5.0",
     "lefthook": "^2.1.4",
     "lint-staged": "^16.4.0",

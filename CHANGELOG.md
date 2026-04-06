@@ -2,6 +2,6 @@
 
 ## 0.1.0 (2026-04-06)
 
-- Repurposed the repository into a neutral Bun + TypeScript CLI starter template
-- Replaced the old application workflow with a tiny sample CLI and offline tests
-- Removed product-specific fixtures, release automation, funding metadata, and legacy branding
+- Created the initial `nameforge` CLI for generating source-backed lowercase names
+- Replaced the placeholder syllable rules with a CMUdict-derived transition model and derivation script
+- Added exact-length generation with optional `--starts-with` and `--ends-with` filters plus offline CLI tests

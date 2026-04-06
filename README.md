@@ -1,46 +1,69 @@
-# TypeScript CLI Starter Template
+# nameforge
 
-A lightweight Bun + TypeScript template for starting CLI projects without carrying over old product-specific behavior, branding, or release automation.
-
-## What stays
-
-- `bin/index.ts` as a tiny working CLI entrypoint
-- `tsdown` for building a single bundled executable
-- `bun:test` for fast local tests
-- `oxfmt`, `oxlint`, `lefthook`, and `commitlint` for basic hygiene
-- GitHub Actions CI that only validates the template
+Generate lowercase names from a CMUdict-derived English letter-transition model, with a meaning column sourced from WordNet when a generated name is also a dictionary lemma.
 
 ## Quick start
 
 ```sh
 bun install
+bun run derive:model
 bun run build
 bun test
 node dist/index.mjs --help
 ```
 
-## Included sample commands
-
-The template ships with intentionally small example commands so the project works immediately:
+## Usage
 
 ```sh
-node dist/index.mjs hello
-node dist/index.mjs hello Codex
-node dist/index.mjs info
-node dist/index.mjs --version
+node dist/index.mjs
+node dist/index.mjs --starts-with no
+node dist/index.mjs --ends-with ut
+node dist/index.mjs --length 6 --starts-with absent
 ```
 
-## Recommended first edits
+`--length` supports values from `2` through `8`. If you omit it, it defaults to `5`.
+Results are printed as a console-table-style terminal table with row indexes:
 
-1. Rename the package and bin command in `package.json`.
-2. Replace the sample command logic in `bin/index.ts`.
-3. Rewrite `tests/cli.test.ts` around your real behavior.
-4. Update this README, the license, and any repository metadata you want to publish.
-5. Add back release automation only when the project is ready for it.
+```text
+┌───┬────────┬─────────────────────────────────────────────────────────────┐
+│   │ name   │ meaning                                                     │
+├───┼────────┼─────────────────────────────────────────────────────────────┤
+│ 1 │ absent │ verb: go away or leave; adjective: not being in a          │
+│   │        │ specified place                                             │
+│ 2 │ noaked │                                                             │
+└───┴────────┴─────────────────────────────────────────────────────────────┘
+```
+
+When the output is shown in an interactive terminal, names that are real WordNet dictionary words are colored. You can force that behavior in non-interactive output with `FORCE_COLOR=1`.
+If a query has no matches, the CLI prints `No results found.` instead of an empty table.
+
+## Model
+
+The generator is derived from [CMUdict](https://github.com/cmusphinx/cmudict), the Carnegie Mellon Pronouncing Dictionary maintained by Carnegie Mellon University.
+
+`bun run derive:model` downloads the current `cmudict.dict` file and Princeton WordNet database, then generates [bin/cmudict-model.ts](/Users/nrjdalal/Desktop/namegen/bin/cmudict-model.ts) and [bin/wordnet-definitions.ts](/Users/nrjdalal/Desktop/namegen/bin/wordnet-definitions.ts).
+
+This means:
+
+- A generated name is only extended with letter sequences observed in CMUdict-derived data.
+- `--starts-with` is treated as a literal prefix, but it still has to be compatible with the source-backed model.
+- `--ends-with` is treated as a literal suffix filter on the generated names.
+- The `meaning` column is filled from WordNet definitions when the generated name is also a WordNet lemma; WordNet usage examples are removed.
+
+## Options
+
+```sh
+--length <number>         Exact name length to generate (2-8, default: 5)
+--starts-with <prefix>    Literal starting prefix to validate and continue from
+--ends-with <suffix>      Literal ending suffix to require
+--help                    Show help
+--version                 Show version
+```
 
 ## Scripts
 
 ```sh
+bun run derive:model
 bun run build
 bun run dev
 bun run format
@@ -48,21 +71,3 @@ bun run format:check
 bun run lint
 bun test
 ```
-
-## Project shape
-
-```text
-.
-├── .github/workflows/test.yml
-├── bin/index.ts
-├── tests/cli.test.ts
-├── package.json
-├── tsconfig.json
-└── tsdown.config.ts
-```
-
-## Notes
-
-- The package is marked `private` by default to prevent accidental publishes.
-- The sample CLI is deliberately small so you can delete or reshape it quickly.
-- The previous project-specific logic, fixtures, release workflows, and funding metadata were removed.
