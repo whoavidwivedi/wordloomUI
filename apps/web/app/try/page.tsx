@@ -5,6 +5,7 @@ import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { Slider } from "@workspace/ui/components/slider"
 import { ArrowLeft, Terminal, LayoutDashboard } from "lucide-react"
+import { motion } from "motion/react"
 import Link from "next/link"
 import { useState, useTransition } from "react"
 
@@ -80,7 +81,18 @@ export default function TryPage() {
       <VantaBackground />
 
       {/* 4:3 Ratio Container */}
-      <main className="w-full max-w-6xl h-[calc(100vh-2rem)] md:h-auto md:aspect-[4/3] bg-white border border-[#1a1a1a] shadow-2xl overflow-hidden flex flex-col relative z-10">
+      <motion.main
+        initial={{
+          opacity: 0,
+          scale: 0.92,
+          y: 40,
+          filter: "blur(8px)",
+          transformOrigin: "bottom right",
+        }}
+        animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
+        transition={{ type: "spring", bounce: 0, duration: 0.65 }}
+        className="w-full max-w-6xl h-[calc(100vh-2rem)] md:h-auto md:aspect-[4/3] bg-white border border-[#1a1a1a] shadow-2xl overflow-hidden flex flex-col relative z-10"
+      >
         {/* Header */}
         <header className="border-b border-[#1a1a1a] p-6 lg:p-8 flex justify-between items-center shrink-0">
           <div className="flex items-center gap-4">
@@ -296,7 +308,7 @@ export default function TryPage() {
             </div>
           </div>
         </div>
-      </main>
+      </motion.main>
     </div>
   )
 }
