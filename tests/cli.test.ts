@@ -91,8 +91,24 @@ describe("nameforge CLI", () => {
     expect(stdout).toContain("observed 5-gram transitions")
   })
 
+  it("shows help even when other options would fail validation", async () => {
+    const { stdout, stderr, exitCode } = await run(["--help", "--length", "1"])
+
+    expect(exitCode).toBe(0)
+    expect(stderr).toBe("")
+    expect(stdout).toContain("CMUdict-derived")
+  })
+
   it("shows the package version", async () => {
     const { stdout, stderr, exitCode } = await run(["--version"])
+
+    expect(exitCode).toBe(0)
+    expect(stderr).toBe("")
+    expect(stdout.trim()).toBe(`${packageJson.name}@${packageJson.version}`)
+  })
+
+  it("shows the package version even when other options would fail validation", async () => {
+    const { stdout, stderr, exitCode } = await run(["--version", "--starts-with", "123"])
 
     expect(exitCode).toBe(0)
     expect(stderr).toBe("")
