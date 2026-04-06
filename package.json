@@ -1,0 +1,47 @@
+{
+  "name": "starter-template",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A reusable Bun + TypeScript starter template for CLI projects.",
+  "keywords": [
+    "bun",
+    "cli",
+    "starter",
+    "template",
+    "tsdown",
+    "typescript"
+  ],
+  "license": "MIT",
+  "bin": {
+    "starter-template": "./dist/index.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint": "oxlint .",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@types/node": "^25.5.0",
+    "lefthook": "^2.1.4",
+    "lint-staged": "^16.4.0",
+    "oxfmt": "^0.41.0",
+    "oxlint": "^1.56.0",
+    "sort-package-json": "^3.6.1",
+    "tsdown": "^0.21.4",
+    "typescript": "^5.9.3"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  }
+}
