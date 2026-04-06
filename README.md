@@ -1,29 +1,32 @@
 # wordloom
 
-Generate lowercase names from a CMUdict-derived English letter-transition model, with a meaning column sourced from WordNet when a generated name is also a dictionary lemma.
+**Generate short, word-like lowercase names from real English letter patterns.**
 
-## Quick start
+[![npm](https://img.shields.io/npm/v/wordloom?color=red&logo=npm)](https://www.npmjs.com/package/wordloom)
+[![downloads](https://img.shields.io/npm/dt/wordloom?color=red&logo=npm)](https://www.npmjs.com/package/wordloom)
+[![license](https://img.shields.io/npm/l/wordloom)](https://www.npmjs.com/package/wordloom)
+
+`wordloom` gives you lowercase name ideas in a clean terminal table. If a result is also a real dictionary word, it shows the meaning next to it.
+
+Good for:
+
+- naming side projects, experiments, or folders
+- exploring short word-like combinations
+- finding names that start or end a certain way
+- spotting real dictionary words among generated results
+
+## Quick usage
 
 ```sh
-bun install
-bun run build
-bun test
-node dist/index.mjs --help
+npx wordloom
+npx wordloom --starts-with no
+npx wordloom --ends-with ut
+npx wordloom --length 6 --starts-with abs
 ```
 
-The checked-in generated model files are already included in the repo and in the published package, so normal users do not need to run `bun run derive:model`.
+Default length is `5`. Supported lengths are `2` through `8`.
 
-## Usage
-
-```sh
-node dist/index.mjs
-node dist/index.mjs --starts-with no
-node dist/index.mjs --ends-with ut
-node dist/index.mjs --length 6 --starts-with absent
-```
-
-`--length` supports values from `2` through `8`. If you omit it, it defaults to `5`.
-Results are printed as a console-table-style terminal table with row indexes:
+Example output:
 
 ```text
 ┌───┬────────┬─────────────────────────────────────────────────────────────┐
@@ -35,42 +38,82 @@ Results are printed as a console-table-style terminal table with row indexes:
 └───┴────────┴─────────────────────────────────────────────────────────────┘
 ```
 
-When the output is shown in an interactive terminal, names that are real WordNet dictionary words are colored. You can force that behavior in non-interactive output with `FORCE_COLOR=1`.
-If a query has no matches, the CLI prints `No results found.` instead of an empty table.
+If nothing matches, `wordloom` prints:
 
-## Model
+```text
+No results found.
+```
 
-The generator is derived from [CMUdict](https://github.com/cmusphinx/cmudict), the Carnegie Mellon Pronouncing Dictionary maintained by Carnegie Mellon University.
+## Why wordloom?
 
-The CLI reads checked-in generated data from [bin/cmudict-model.ts](./bin/cmudict-model.ts) and [bin/wordnet-definitions.ts](./bin/wordnet-definitions.ts), so installed users can run `wordloom` immediately.
+- Uses real English letter patterns derived from [CMUdict](https://github.com/cmusphinx/cmudict), instead of fully random strings
+- Adds meanings from WordNet when a generated result is also a real dictionary word
+- Supports exact length, prefix, and suffix filtering
+- Prints results in alphabetical order in a readable terminal table
+- Highlights dictionary matches in color in interactive terminals
 
-`bun run derive:model` is a maintainer workflow. It downloads the current `cmudict.dict` file and Princeton WordNet database, regenerates those checked-in files, and formats the generated output.
+## Install
 
-This means:
+```sh
+npm install -g wordloom
+wordloom --help
+```
 
-- A generated name is only extended with letter sequences observed in CMUdict-derived data.
-- `--starts-with` is treated as a literal prefix, but it still has to be compatible with the source-backed model.
-- `--ends-with` is treated as a literal suffix filter on the generated names.
-- The `meaning` column is filled from WordNet definitions when the generated name is also a WordNet lemma; WordNet usage examples are removed.
+You can also run it without installing:
+
+```sh
+npx wordloom --starts-with no
+```
 
 ## Options
 
-```sh
---length <number>         Exact name length to generate (2-8, default: 5)
---starts-with <prefix>    Literal starting prefix to validate and continue from
---ends-with <suffix>      Literal ending suffix to require
---help                    Show help
---version                 Show version
+```text
+-l, --length <number>         Exact name length to generate (2-8, default: 5)
+-s, --starts-with <prefix>    Literal starting prefix to validate and continue from
+-e, --ends-with <suffix>      Literal ending suffix to require
+-h, --help                    Show help
+-v, --version                 Show version
 ```
 
-## Scripts
+## More examples
 
 ```sh
+wordloom
+wordloom --length 6
+wordloom --starts-with no
+wordloom --ends-with ut
+wordloom --length 6 --starts-with abs
+wordloom --length 5 --starts-with re --ends-with t
+```
+
+## How it works
+
+`wordloom` is source-backed, but the idea is simple:
+
+- it learns allowed letter transitions from CMUdict
+- it generates names that follow those learned patterns
+- it looks up each generated result in WordNet
+- if the result is a real dictionary lemma, it shows the meaning
+
+That means the results are more word-like than random strings, but they are not guaranteed to be common words, proper names, or brand-safe names.
+
+The checked-in generated model files already ship with the repo and the published package, so normal users do not need to run `bun run derive:model`.
+
+## For maintainers
+
+Regenerating the model is only needed when refreshing the checked-in data sources:
+
+```sh
+bun install
 bun run derive:model
 bun run build
-bun run dev
-bun run format
-bun run format:check
-bun run lint
 bun test
+bun run lint
+bun run format:check
 ```
+
+Generated data lives in [bin/cmudict-model.ts](./bin/cmudict-model.ts) and [bin/wordnet-definitions.ts](./bin/wordnet-definitions.ts).
+
+## License
+
+MIT

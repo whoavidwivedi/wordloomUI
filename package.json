@@ -1,18 +1,30 @@
 {
   "name": "wordloom",
-  "version": "0.1.0",
-  "description": "Generate source-backed lowercase names from a CMUdict-derived transition model.",
+  "version": "0.2.0",
+  "description": "Generate short, word-like lowercase names and show meanings for dictionary matches.",
   "keywords": [
-    "bun",
     "cli",
     "cmudict",
-    "generator",
+    "dictionary",
     "name",
+    "name-generator",
+    "naming",
     "phonotactics",
-    "typescript",
-    "wordloom"
+    "pronounceable",
+    "word-generator",
+    "wordloom",
+    "wordnet"
   ],
+  "homepage": "https://github.com/nrjdalal/nameforge#readme",
+  "bugs": "https://github.com/nrjdalal/nameforge/issues",
   "license": "MIT",
+  "author": {
+    "name": "Neeraj Dalal",
+    "email": "admin@nrjdalal.com",
+    "url": "https://nrjdalal.com"
+  },
+  "repository": "nrjdalal/nameforge",
+  "funding": "https://github.com/sponsors/nrjdalal",
   "bin": {
     "wordloom": "./dist/index.mjs"
   },
