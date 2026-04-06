@@ -16,7 +16,12 @@ const main = () => {
     return
   }
 
-  const generationPlan = createGenerationPlan(options.length, options.prefix, options.suffix)
+  const generationPlan = createGenerationPlan(
+    options.length,
+    options.prefix,
+    options.suffix,
+    options.contains,
+  )
 
   writeNamesOutput(generationPlan.names, generationPlan.count, options.length)
 }

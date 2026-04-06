@@ -14,7 +14,7 @@ Good for:
 
 - naming side projects, experiments, or folders
 - exploring short word-like combinations
-- finding names that start or end a certain way
+- finding names that start, end, or contain a certain pattern
 - spotting real dictionary words among generated results
 
 ## Quick usage
@@ -23,6 +23,7 @@ Good for:
 npx wordloom
 npx wordloom --prefix no
 npx wordloom --suffix ut
+npx wordloom --contains abse
 npx wordloom --length 6 --prefix abs
 ```
 
@@ -31,24 +32,20 @@ Default length is `5`. Supported lengths are `2` through `8`.
 Example:
 
 ```sh
-npx wordloom --length 6 --prefix abs
+npx wordloom --length 6 --contains abse
 ```
 
-Output starts like this:
+Output:
 
 ```text
-┌────┬────────┬────────────────────────────────────────────────────────────────────────────────┐
-│    │ name   │ meaning                                                                        │
-├────┼────────┼────────────────────────────────────────────────────────────────────────────────┤
-│ 1  │ absalo │                                                                                │
-│ 2  │ absara │                                                                                │
-│ 3  │ abscam │                                                                                │
-│ 4  │ absces │                                                                                │
-│ 5  │ abscon │                                                                                │
-│ 6  │ abscot │                                                                                │
-│ 7  │ abseco │                                                                                │
-│ 8  │ absect │                                                                                │
-│ 9  │ absent │ verb: go away or leave; adjective: not being in a specified place              │
+┌───┬────────┬──────────────────────────────────────────────┐
+│   │ name   │ meaning                                      │
+├───┼────────┼──────────────────────────────────────────────┤
+│ 1 │ abseco │                                              │
+│ 2 │ absect │                                              │
+│ 3 │ absent │ verb: go away or leave; adjective: not      │
+│   │        │ being in a specified place                   │
+└───┴────────┴──────────────────────────────────────────────┘
 ```
 
 If nothing matches, `wordloom` prints:
@@ -61,7 +58,7 @@ No results found.
 
 - Uses real English letter patterns derived from [CMUdict](https://github.com/cmusphinx/cmudict), instead of fully random strings
 - Adds meanings from WordNet when a generated result is also a real dictionary word
-- Supports exact length, prefix, and suffix filtering
+- Supports exact length, prefix, suffix, and contains filtering
 - Prints results in alphabetical order in a readable terminal table
 - Highlights dictionary matches in color in interactive terminals
 
@@ -75,13 +72,14 @@ wordloom --help
 You can also run it without installing:
 
 ```sh
-npx wordloom --prefix no
+npx wordloom --contains abse
 ```
 
 ## Options
 
 ```text
 -l, --length <number>         Exact name length to generate (2-8, default: 5)
+-c, --contains <text>         Literal substring to require anywhere in the name
 -p, --prefix <prefix>         Literal starting prefix to validate and continue from
 -s, --suffix <suffix>         Literal ending suffix to require
 -h, --help                    Show help
@@ -93,6 +91,7 @@ npx wordloom --prefix no
 ```sh
 wordloom
 wordloom --length 6
+wordloom --contains abse
 wordloom --prefix no
 wordloom --suffix ut
 wordloom --length 6 --prefix abs

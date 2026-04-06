@@ -3,6 +3,8 @@ import { CMUDICT_CONTEXT_SIZE, CMUDICT_TRANSITIONS } from "./cmudict-model"
 const startContext = "^".repeat(CMUDICT_CONTEXT_SIZE)
 
 type PrefixValidation = {
+  containsMatched: boolean
+  containsState: number
   context: string
   suffixState: number
   valid: boolean
@@ -45,7 +47,7 @@ const buildFailureTable = (pattern: string) => {
   return failureTable
 }
 
-const advanceSuffixState = (
+const advancePatternState = (
   pattern: string,
   failureTable: readonly number[],
   currentState: number,
@@ -71,20 +73,69 @@ const advanceSuffixState = (
 const suffixMatches = (suffix: string, suffixState: number) =>
   !suffix || suffixState === suffix.length
 
-const validatePrefix = (prefix: string, suffix: string, failureTable: readonly number[]) => {
+const containsMatches = (contains: string, containsMatched: boolean) => !contains || containsMatched
+
+const advanceContainsProgress = (
+  contains: string,
+  failureTable: readonly number[],
+  containsMatched: boolean,
+  containsState: number,
+  character: string,
+) => {
+  if (!contains || containsMatched) {
+    return { matched: containsMatched || !contains, state: 0 }
+  }
+
+  const nextState = advancePatternState(contains, failureTable, containsState, character)
+
+  return nextState === contains.length
+    ? { matched: true, state: 0 }
+    : { matched: false, state: nextState }
+}
+
+const validatePrefix = (
+  prefix: string,
+  suffix: string,
+  suffixFailureTable: readonly number[],
+  contains: string,
+  containsFailureTable: readonly number[],
+) => {
   let context = startContext
+  let containsMatched = contains.length === 0
+  let containsState = 0
   let suffixState = 0
 
   for (const character of prefix) {
     if (!listNextCharacters(context).includes(character)) {
-      return { context: "", suffixState: 0, valid: false } satisfies PrefixValidation
+      return {
+        containsMatched: false,
+        containsState: 0,
+        context: "",
+        suffixState: 0,
+        valid: false,
+      } satisfies PrefixValidation
     }
 
     context = advanceContext(context, character)
-    suffixState = advanceSuffixState(suffix, failureTable, suffixState, character)
+    suffixState = advancePatternState(suffix, suffixFailureTable, suffixState, character)
+    const nextContainsProgress = advanceContainsProgress(
+      contains,
+      containsFailureTable,
+      containsMatched,
+      containsState,
+      character,
+    )
+    containsMatched = nextContainsProgress.matched
+    containsState = nextContainsProgress.state
   }
 
-  return { context, suffixState, valid: true } satisfies PrefixValidation
+  return {
+    containsMatched,
+    containsState,
+    context,
+    suffixState,
+    valid: true,
+  } satisfies PrefixValidation
 }
 
 const emptyNames = function* (): Generator<string> {}
@@ -93,18 +144,27 @@ export const createGenerationPlan = (
   targetLength: number,
   prefix: string,
   suffix: string,
+  contains: string,
 ): GenerationPlan => {
-  const failureTable = buildFailureTable(suffix)
-  const prefixValidation = validatePrefix(prefix, suffix, failureTable)
+  const suffixFailureTable = buildFailureTable(suffix)
+  const containsFailureTable = buildFailureTable(contains)
+  const prefixValidation = validatePrefix(
+    prefix,
+    suffix,
+    suffixFailureTable,
+    contains,
+    containsFailureTable,
+  )
   const countMemo = new Map<string, number>()
 
   const countCompletions = (
     remainingLength: number,
     context: string,
-    suffixToMatch: string,
     suffixState: number,
+    containsState: number,
+    containsMatched: boolean,
   ): number => {
-    const cacheKey = `${remainingLength}:${context}:${suffixState}:${suffixToMatch}`
+    const cacheKey = `${remainingLength}:${context}:${suffixState}:${containsState}:${containsMatched ? 1 : 0}`
     const cachedCount = countMemo.get(cacheKey)
 
     if (cachedCount !== undefined) {
@@ -114,17 +174,30 @@ export const createGenerationPlan = (
     let completionCount = 0
 
     if (remainingLength === 0) {
-      completionCount = canEnd(context) && suffixMatches(suffixToMatch, suffixState) ? 1 : 0
+      completionCount =
+        canEnd(context) &&
+        suffixMatches(suffix, suffixState) &&
+        containsMatches(contains, containsMatched)
+          ? 1
+          : 0
       countMemo.set(cacheKey, completionCount)
       return completionCount
     }
 
     for (const character of listNextCharacters(context)) {
+      const nextContainsProgress = advanceContainsProgress(
+        contains,
+        containsFailureTable,
+        containsMatched,
+        containsState,
+        character,
+      )
       completionCount += countCompletions(
         remainingLength - 1,
         advanceContext(context, character),
-        suffixToMatch,
-        advanceSuffixState(suffixToMatch, failureTable, suffixState, character),
+        advancePatternState(suffix, suffixFailureTable, suffixState, character),
+        nextContainsProgress.state,
+        nextContainsProgress.matched,
       )
     }
 
@@ -136,11 +209,16 @@ export const createGenerationPlan = (
     remainingLength: number,
     context: string,
     currentName: string,
-    suffixToMatch: string,
     suffixState: number,
+    containsState: number,
+    containsMatched: boolean,
   ): Generator<string> {
     if (remainingLength === 0) {
-      if (canEnd(context) && suffixMatches(suffixToMatch, suffixState)) {
+      if (
+        canEnd(context) &&
+        suffixMatches(suffix, suffixState) &&
+        containsMatches(contains, containsMatched)
+      ) {
         yield currentName
       }
 
@@ -149,14 +227,29 @@ export const createGenerationPlan = (
 
     for (const character of listNextCharacters(context)) {
       const nextContext = advanceContext(context, character)
-      const nextSuffixState = advanceSuffixState(
-        suffixToMatch,
-        failureTable,
+      const nextSuffixState = advancePatternState(
+        suffix,
+        suffixFailureTable,
         suffixState,
         character,
       )
+      const nextContainsProgress = advanceContainsProgress(
+        contains,
+        containsFailureTable,
+        containsMatched,
+        containsState,
+        character,
+      )
 
-      if (!countCompletions(remainingLength - 1, nextContext, suffixToMatch, nextSuffixState)) {
+      if (
+        !countCompletions(
+          remainingLength - 1,
+          nextContext,
+          nextSuffixState,
+          nextContainsProgress.state,
+          nextContainsProgress.matched,
+        )
+      ) {
         continue
       }
 
@@ -164,8 +257,9 @@ export const createGenerationPlan = (
         remainingLength - 1,
         nextContext,
         currentName + character,
-        suffixToMatch,
         nextSuffixState,
+        nextContainsProgress.state,
+        nextContainsProgress.matched,
       )
     }
   }
@@ -174,8 +268,9 @@ export const createGenerationPlan = (
     ? countCompletions(
         targetLength - prefix.length,
         prefixValidation.context,
-        suffix,
         prefixValidation.suffixState,
+        prefixValidation.containsState,
+        prefixValidation.containsMatched,
       )
     : 0
 
@@ -188,8 +283,9 @@ export const createGenerationPlan = (
             targetLength - prefix.length,
             prefixValidation.context,
             prefix,
-            suffix,
             prefixValidation.suffixState,
+            prefixValidation.containsState,
+            prefixValidation.containsMatched,
           ),
   }
 }

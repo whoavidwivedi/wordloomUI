@@ -83,6 +83,7 @@ describe("wordloom CLI", () => {
     expect(exitCode).toBe(0)
     expect(stderr).toBe("")
     expect(stdout).toContain("CMUdict-derived")
+    expect(stdout).toContain("--contains <text>")
     expect(stdout).toContain("--prefix <prefix>")
     expect(stdout).toContain("--suffix <suffix>")
     expect(stdout).toContain("WordNet meanings")
@@ -183,6 +184,23 @@ describe("wordloom CLI", () => {
     expect(rows).toHaveLength(71)
   })
 
+  it("filters generated names by substring", async () => {
+    const { stdout, stderr, exitCode } = await run(["--length", "6", "--contains", "abse"])
+    const { rows } = parseTableOutput(stdout)
+
+    expect(exitCode).toBe(0)
+    expect(stderr).toBe("")
+    expect(rows).toEqual([
+      { index: "1", meaning: "", name: "abseco" },
+      { index: "2", meaning: "", name: "absect" },
+      {
+        index: "3",
+        meaning: "verb: go away or leave; adjective: not being in a specified place",
+        name: "absent",
+      },
+    ])
+  })
+
   it("fills the meaning column for WordNet words", async () => {
     const { stdout, stderr, exitCode } = await run(["--length", "6", "--prefix", "absent"])
     const { rows } = parseTableOutput(stdout)
@@ -262,5 +280,13 @@ describe("wordloom CLI", () => {
     expect(exitCode).toBe(1)
     expect(stdout).toBe("")
     expect(stderr.trim()).toBe("--length must be an integer between 2 and 8")
+  })
+
+  it("rejects contains values with non-letter characters", async () => {
+    const { stdout, stderr, exitCode } = await run(["--contains", "ab1"])
+
+    expect(exitCode).toBe(1)
+    expect(stdout).toBe("")
+    expect(stderr.trim()).toBe("--contains must contain only letters")
   })
 })

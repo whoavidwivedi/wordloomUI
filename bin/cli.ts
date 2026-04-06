@@ -16,18 +16,20 @@ ${commandName}
 Generate lowercase names from a CMUdict-derived English letter-transition model.
 
 Usage:
-  ${commandName} [--length <number>] [--prefix <prefix>] [--suffix <suffix>]
+  ${commandName} [--length <number>] [--prefix <prefix>] [--suffix <suffix>] [--contains <text>]
 
 Examples:
   ${commandName}
   ${commandName} --prefix no
   ${commandName} --suffix ut
+  ${commandName} --contains abs
   ${commandName} --length 6 --prefix absent
 
 Options:
   -l, --length <number>         Exact name length to generate (2-8, default: 5)
   -p, --prefix <prefix>         Literal starting prefix to validate and continue from
   -s, --suffix <suffix>         Literal ending suffix to require
+  -c, --contains <text>         Literal substring to require anywhere in the name
   -h, --help                    Show help
   -v, --version                 Show version
 
@@ -50,9 +52,11 @@ const parseOptions = {
   length: { type: "string", short: "l" },
   prefix: { type: "string", short: "p" },
   suffix: { type: "string", short: "s" },
+  contains: { type: "string", short: "c" },
 } as const
 
 type ParsedValues = {
+  contains?: string
   help?: boolean
   length?: string
   prefix?: string
@@ -61,6 +65,7 @@ type ParsedValues = {
 }
 
 export type CliOptions = {
+  contains: string
   help: boolean
   length: number
   prefix: string
@@ -93,7 +98,7 @@ const parseLength = (rawLength: string | undefined) => {
 }
 
 const parseLettersOnlyOption = (
-  optionName: "--prefix" | "--suffix",
+  optionName: "--contains" | "--prefix" | "--suffix",
   rawValue: string | undefined,
   length: number,
 ) => {
@@ -124,6 +129,9 @@ const parsePrefix = (rawPrefix: string | undefined, length: number) =>
 const parseSuffix = (rawSuffix: string | undefined, length: number) =>
   parseLettersOnlyOption("--suffix", rawSuffix, length)
 
+const parseContains = (rawContains: string | undefined, length: number) =>
+  parseLettersOnlyOption("--contains", rawContains, length)
+
 const parseCliArgs = (): ParsedValues => {
   try {
     const { values } = parseArgs({
@@ -146,6 +154,7 @@ export const readCliOptions = (): CliOptions => {
 
   if (help || version) {
     return {
+      contains: "",
       help,
       length: DEFAULT_LENGTH,
       prefix: "",
@@ -157,6 +166,7 @@ export const readCliOptions = (): CliOptions => {
   const length = parseLength(parsedValues.length)
 
   return {
+    contains: parseContains(parsedValues.contains, length),
     help,
     length,
     prefix: parsePrefix(parsedValues.prefix, length),
