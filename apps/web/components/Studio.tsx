@@ -17,7 +17,7 @@ import {
 } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 import Link from "next/link"
-import { useEffect, useRef, useState, useTransition } from "react"
+import { memo, useCallback, useEffect, useRef, useState, useTransition } from "react"
 import { toast } from "sonner"
 
 import { generateNamesAction } from "../app/actions"
@@ -57,7 +57,7 @@ function parseCliCommand(cmd: string) {
   return { parsedLength, parsedPrefix, parsedSuffix, parsedContains }
 }
 
-function ResultCard({
+const ResultCard = memo(function ResultCard({
   item,
   isSaved,
   isActive,
@@ -83,6 +83,7 @@ function ResultCard({
   return (
     <div
       onClick={() => onCheckAvailability(item.name)}
+      style={{ contentVisibility: "auto", containIntrinsicSize: "0 160px" } as any}
       className={`group border p-5 flex flex-col cursor-pointer relative overflow-hidden ${
         isActive
           ? "border-[#C2A15D] bg-[#C2A15D] text-white shadow-xl ring-2 ring-[#C2A15D]/20"
@@ -181,7 +182,7 @@ function ResultCard({
       )}
     </div>
   )
-}
+})
 
 export function Studio({
   onBack,
@@ -260,7 +261,7 @@ export function Studio({
     return () => window.clearTimeout(timeout)
   }, [bookmarkFeedback])
 
-  const toggleBookmark = (item: { name: string; meaning: string }) => {
+  const toggleBookmark = useCallback((item: { name: string; meaning: string }) => {
     setBookmarkFeedback({ name: item.name, key: Date.now() })
     setBookmarks((prev) => {
       const exists = prev.some((b) => b.name === item.name)
@@ -268,15 +269,15 @@ export function Studio({
       localStorage.setItem("wordloom_bookmarks", JSON.stringify(updated))
       return updated
     })
-  }
+  }, [])
 
-  const handleCopy = (text: string) => {
+  const handleCopy = useCallback((text: string) => {
     navigator.clipboard.writeText(text)
     setCopyFeedback({ name: text, key: Date.now() })
     toast.success(`Copied "${text}" to clipboard`, {
       description: "You can now paste it anywhere.",
     })
-  }
+  }, [])
 
   const handleGenerate = () => {
     setResults([])

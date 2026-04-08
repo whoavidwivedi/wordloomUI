@@ -6,7 +6,7 @@ import { Label } from "@workspace/ui/components/label"
 import { Slider } from "@workspace/ui/components/slider"
 import { ArrowLeft, Bookmark, BookmarkCheck, Copy, LayoutDashboard, Terminal } from "lucide-react"
 import Link from "next/link"
-import { useState, useTransition, useEffect, useRef } from "react"
+import { useState, useTransition, useEffect, useRef, memo, useCallback } from "react"
 import { toast } from "sonner"
 
 import { generateNamesAction } from "../actions"
@@ -33,6 +33,64 @@ function parseCliCommand(cmd: string) {
 
   return { parsedLength, parsedPrefix, parsedSuffix, parsedContains }
 }
+
+const TryResultCard = memo(function TryResultCard({
+  item,
+  isSaved,
+  onToggleBookmark,
+  onCopy,
+}: {
+  item: { name: string; meaning: string }
+  isSaved: boolean
+  onToggleBookmark: (item: { name: string; meaning: string }) => void
+  onCopy: (text: string) => void
+}) {
+  return (
+    <div
+      style={{ contentVisibility: "auto", containIntrinsicSize: "0 140px" } as any}
+      className="border border-[#1a1a1a] p-4 flex flex-col group hover:bg-[#1a1a1a] hover:text-white transition-colors cursor-default relative"
+    >
+      <button
+        onClick={() => onToggleBookmark(item)}
+        className="absolute top-4 right-4 text-[#1a1a1a] group-hover:text-white hover:scale-110 transition-transform"
+        title={isSaved ? "Remove Bookmark" : "Save Bookmark"}
+      >
+        {isSaved ? (
+          <BookmarkCheck className="w-5 h-5 fill-current" />
+        ) : (
+          <Bookmark className="w-5 h-5" />
+        )}
+      </button>
+
+      <button
+        onClick={() => onCopy(item.name)}
+        className="absolute top-4 right-12 text-[#1a1a1a] group-hover:text-white hover:scale-110 transition-transform"
+        title="Copy to Clipboard"
+      >
+        <Copy className="w-4 h-4" />
+      </button>
+
+      <div className="flex flex-col mb-2 pr-20">
+        <span
+          className="text-xl font-bold lowercase tracking-widest"
+          style={{ fontFamily: "'Google Sans Flex', sans-serif" }}
+        >
+          {item.name}
+        </span>
+      </div>
+      {item.meaning && (
+        <>
+          <p className="font-sans text-xs opacity-70 group-hover:opacity-100 line-clamp-3 leading-relaxed pr-8">
+            {item.meaning}
+          </p>
+          <span className="absolute bottom-2 right-2 text-[8px] font-mono uppercase bg-[#1a1a1a] text-[#ecebe5] group-hover:bg-[#ecebe5] group-hover:text-[#1a1a1a] px-1 py-0.5 pointer-events-none">
+            Def
+          </span>
+        </>
+      )}
+    </div>
+  )
+})
 
 export default function TryPage() {
   const [mode, setMode] = useState<"ui" | "cli" | "bookmarks">("ui")
@@ -68,21 +126,21 @@ export default function TryPage() {
     }
   }, [])
 
-  const toggleBookmark = (item: { name: string; meaning: string }) => {
+  const toggleBookmark = useCallback((item: { name: string; meaning: string }) => {
     setBookmarks((prev) => {
       const exists = prev.some((b) => b.name === item.name)
       const updated = exists ? prev.filter((b) => b.name !== item.name) : [...prev, item]
       localStorage.setItem("wordloom_bookmarks", JSON.stringify(updated))
       return updated
     })
-  }
+  }, [])
 
-  const handleCopy = (text: string) => {
+  const handleCopy = useCallback((text: string) => {
     navigator.clipboard.writeText(text)
     toast.success(`Copied "${text}" to clipboard`, {
       description: "You can now paste it anywhere.",
     })
-  }
+  }, [])
 
   const handleGenerate = () => {
     setResults([])
@@ -441,55 +499,15 @@ export default function TryPage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-12">
-                  {displayedResults.map((item, i) => {
-                    const isSaved = bookmarks.some((b) => b.name === item.name)
-
-                    return (
-                      <div
-                        key={i}
-                        className="border border-[#1a1a1a] p-4 flex flex-col group hover:bg-[#1a1a1a] hover:text-white transition-colors cursor-default relative"
-                      >
-                        <button
-                          onClick={() => toggleBookmark(item)}
-                          className="absolute top-4 right-4 text-[#1a1a1a] group-hover:text-white hover:scale-110 transition-transform"
-                          title={isSaved ? "Remove Bookmark" : "Save Bookmark"}
-                        >
-                          {isSaved ? (
-                            <BookmarkCheck className="w-5 h-5 fill-current" />
-                          ) : (
-                            <Bookmark className="w-5 h-5" />
-                          )}
-                        </button>
-
-                        <button
-                          onClick={() => handleCopy(item.name)}
-                          className="absolute top-4 right-12 text-[#1a1a1a] group-hover:text-white hover:scale-110 transition-transform"
-                          title="Copy to Clipboard"
-                        >
-                          <Copy className="w-4 h-4" />
-                        </button>
-
-                        <div className="flex flex-col mb-2 pr-20">
-                          <span
-                            className="text-xl font-bold lowercase tracking-widest"
-                            style={{ fontFamily: "'Google Sans Flex', sans-serif" }}
-                          >
-                            {item.name}
-                          </span>
-                        </div>
-                        {item.meaning && (
-                          <>
-                            <p className="font-sans text-xs opacity-70 group-hover:opacity-100 line-clamp-3 leading-relaxed pr-8">
-                              {item.meaning}
-                            </p>
-                            <span className="absolute bottom-2 right-2 text-[8px] font-mono uppercase bg-[#1a1a1a] text-[#ecebe5] group-hover:bg-[#ecebe5] group-hover:text-[#1a1a1a] px-1 py-0.5 pointer-events-none">
-                              Def
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    )
-                  })}
+                  {displayedResults.map((item, i) => (
+                    <TryResultCard
+                      key={item.name}
+                      item={item}
+                      isSaved={bookmarks.some((b) => b.name === item.name)}
+                      onToggleBookmark={toggleBookmark}
+                      onCopy={handleCopy}
+                    />
+                  ))}
                   {mode !== "bookmarks" && hasMore && (
                     <div
                       ref={sentinelRef}
