@@ -664,12 +664,6 @@ export function Studio({
                   </div>
                 ) : (
                   <div className="space-y-4 pb-12">
-                    {mode !== "bookmarks" && (
-                      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#1a1a1a]/60">
-                        Total {displayedCount} possibilities found alphabetical (A-Z)
-                      </p>
-                    )}
-
                     <div className="space-y-12">
                       {groupedResults ? (
                         Object.entries(groupedResults)

@@ -1394,3 +1394,10 @@ Ecmascript file had an error
   11 |   title: "Wordloom — The Engineering Issue",
 
 `ssr: false` is not allowed with `next/dynamic` in Server Components. Please move it into a Client Component.
+[06:08:06.703] Server  WARN    ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+[06:08:06.709] Server  LOG     ✓ Compiled in 305ms
+[06:08:06.979] Server  WARN    ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+[06:08:07.806] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[06:08:07.820] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[06:11:17.671] Server  LOG     ✓ Compiled in 474ms
+[06:15:42.241] Server  LOG     ✓ Compiled in 150ms
