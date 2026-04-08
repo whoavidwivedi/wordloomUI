@@ -565,7 +565,7 @@ export default function TryPage() {
 
             <div className="flex-1 overflow-y-auto pr-2">
               {mode !== "bookmarks" && Object.keys(letterOffsets).length > 0 && (
-                <div className="flex flex-row justify-between w-full mb-4 sticky top-0 bg-white z-20 overflow-x-auto no-scrollbar py-1">
+                <div className="flex flex-row flex-nowrap items-center gap-1 mb-2 sticky top-0 bg-white z-20 overflow-x-auto no-scrollbar py-0.5">
                   {"abcdefghijklmnopqrstuvwxyz".split("").map((l) => {
                     const isAvailable = letterOffsets[l] !== undefined && letterOffsets[l] !== -1
                     return (
@@ -573,7 +573,7 @@ export default function TryPage() {
                         key={l}
                         disabled={!isAvailable}
                         onClick={() => jumpToLetter(l)}
-                        className={`text-[10px] font-mono uppercase transition-all px-1
+                        className={`text-[10px] font-mono uppercase transition-all px-0.5 bg-transparent border-none
                           ${
                             activeLetter === l
                               ? "text-black font-bold"
