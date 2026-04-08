@@ -20,7 +20,7 @@ import Link from "next/link"
 import { memo, useCallback, useEffect, useRef, useState, useTransition } from "react"
 import { toast } from "sonner"
 
-import { generateNamesAction } from "../app/actions"
+import { generateNamesAction, getLetterOffsetsAction } from "../app/actions"
 
 const spring = { type: "spring" as const, stiffness: 280, damping: 32, mass: 1.1 }
 const fastSpring = { type: "spring" as const, stiffness: 450, damping: 34, mass: 0.75 }
@@ -210,6 +210,9 @@ export function Studio({
   const [bookmarkFeedback, setBookmarkFeedback] = useState<{ name: string; key: number } | null>(
     null,
   )
+  const [letterOffsets, setLetterOffsets] = useState<Record<string, number>>({})
+  const [activeLetter, setActiveLetter] = useState<string>("a")
+  const [hasSearched, setHasSearched] = useState(false)
 
   // Bookmarks State
   const [bookmarks, setBookmarks] = useState<{ name: string; meaning: string }[]>([])
@@ -246,6 +249,30 @@ export function Studio({
   useEffect(() => {
     onAvailabilityOpenChange?.(availabilityTarget !== null)
   }, [availabilityTarget, onAvailabilityOpenChange])
+
+  // ScrollSpy for A-Z Navigation
+  useEffect(() => {
+    if (mode === "bookmarks" || results.length === 0) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleLetters = entries
+          .filter((e) => e.isIntersecting)
+          .map((e) => e.target.getAttribute("data-letter") || "")
+
+        if (visibleLetters.length > 0 && visibleLetters[0]) {
+          // Set to the first visible letter in the viewport
+          setActiveLetter(visibleLetters[0].toLowerCase())
+        }
+      },
+      { threshold: 0.1, rootMargin: "-10% 0px -80% 0px" },
+    )
+
+    const sections = document.querySelectorAll("[data-letter]")
+    sections.forEach((s) => observer.observe(s))
+
+    return () => observer.disconnect()
+  }, [results, mode])
 
   useEffect(() => {
     if (!copyFeedback) return
@@ -284,6 +311,62 @@ export function Studio({
     setSkip(0)
     setTotalCount(0)
     setHasMore(false)
+    setHasSearched(true)
+    setLetterOffsets({})
+
+    startTransition(async () => {
+      let finalLength = length[0] ?? 5
+      let finalPrefix = prefix
+      let finalSuffix = suffix
+      let finalContains = contains
+
+      if (mode === "cli") {
+        const parsed = parseCliCommand(cliCommand)
+        finalLength = parsed.parsedLength
+        finalPrefix = parsed.parsedPrefix
+        finalSuffix = parsed.parsedSuffix
+        finalContains = parsed.parsedContains
+      }
+
+      // Pre-calculate alphabetical offsets for A-Z Jumping
+      const offsets = await getLetterOffsetsAction(
+        finalLength,
+        finalPrefix.toLowerCase(),
+        finalSuffix.toLowerCase(),
+        finalContains.toLowerCase(),
+      )
+      setLetterOffsets(offsets)
+
+      const res = await generateNamesAction(
+        finalLength,
+        finalPrefix.toLowerCase(),
+        finalSuffix.toLowerCase(),
+        finalContains.toLowerCase(),
+        0,
+        500,
+      )
+
+      setResults(res.results)
+      setTotalCount(res.count)
+      setSkip(res.results.length)
+      setHasMore(res.results.length < res.count)
+
+      if (res.results.length > 0 && res.results[0]) {
+        setActiveLetter(res.results[0].name[0]?.toLowerCase() || "a")
+      }
+
+      if (mode === "bookmarks") setMode("ui")
+    })
+  }
+
+  const jumpToLetter = (letter: string) => {
+    const offset = letterOffsets[letter]
+    if (offset === undefined || offset === -1) return
+
+    setResults([])
+    setSkip(offset)
+    setHasMore(true)
+    setActiveLetter(letter)
 
     startTransition(async () => {
       let finalLength = length[0] ?? 5
@@ -304,16 +387,13 @@ export function Studio({
         finalPrefix.toLowerCase(),
         finalSuffix.toLowerCase(),
         finalContains.toLowerCase(),
-        0,
+        offset,
         500,
       )
 
       setResults(res.results)
-      setTotalCount(res.count)
-      setSkip(res.results.length)
-      setHasMore(res.results.length < res.count)
-
-      if (mode === "bookmarks") setMode("ui")
+      setSkip(offset + res.results.length)
+      setHasMore(offset + res.results.length < totalCount)
     })
   }
 
@@ -656,10 +736,49 @@ export function Studio({
               </div>
 
               <div className="flex-1 overflow-y-auto pr-2">
-                {displayedResults.length === 0 ? (
+                {mode !== "bookmarks" && Object.keys(letterOffsets).length > 0 && (
+                  <div className="flex flex-wrap gap-1 mb-6 border-b border-[#1a1a1a] pb-4 sticky top-0 bg-white z-20">
+                    {"abcdefghijklmnopqrstuvwxyz".split("").map((l) => {
+                      const isAvailable = letterOffsets[l] !== undefined && letterOffsets[l] !== -1
+                      return (
+                        <button
+                          key={l}
+                          disabled={!isAvailable}
+                          onClick={() => jumpToLetter(l)}
+                          className={`w-7 h-7 flex items-center justify-center text-[10px] font-mono uppercase transition-all
+                            ${
+                              activeLetter === l
+                                ? "bg-[#1a1a1a] text-white"
+                                : isAvailable
+                                  ? "text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white"
+                                  : "text-[#1a1a1a]/20 cursor-not-allowed"
+                            }
+                          `}
+                        >
+                          {l}
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
+
+                {isPending ? (
+                  <div className="h-full flex flex-col items-center justify-center opacity-30 gap-4">
+                    <div className="w-8 h-8 border-2 border-[#1a1a1a] border-t-transparent rounded-full animate-spin" />
+                    <p className="font-mono text-[10px] uppercase tracking-widest">
+                      {skip === 0
+                        ? "Generating exhaustive set..."
+                        : `Navigating to ${activeLetter}...`}
+                    </p>
+                  </div>
+                ) : displayedResults.length === 0 ? (
                   <div className="h-full flex items-center justify-center opacity-30">
                     <p className="font-serif text-2xl uppercase tracking-tighter">
-                      {mode === "bookmarks" ? "No Bookmarks" : "Awaiting input..."}
+                      {mode === "bookmarks"
+                        ? "No Bookmarks"
+                        : hasSearched
+                          ? "No items found"
+                          : "Awaiting input..."}
                     </p>
                   </div>
                 ) : (
@@ -669,7 +788,11 @@ export function Studio({
                         Object.entries(groupedResults)
                           .sort(([a], [b]) => a.localeCompare(b))
                           .map(([letter, items]) => (
-                            <section key={letter} className="space-y-4">
+                            <section
+                              key={letter}
+                              data-letter={letter}
+                              className="space-y-4 pt-4 -mt-4"
+                            >
                               <h3 className="font-mono text-xs font-bold bg-[#1a1a1a] text-white w-8 h-8 flex items-center justify-center">
                                 {letter}
                               </h3>

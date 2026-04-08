@@ -1401,3 +1401,23 @@ Ecmascript file had an error
 [06:08:07.820] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
 [06:11:17.671] Server  LOG     ✓ Compiled in 474ms
 [06:15:42.241] Server  LOG     ✓ Compiled in 150ms
+[06:21:52.489] Server  WARN    ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+[06:22:45.729] Server  LOG     ✓ Compiled in 1048ms
+[06:22:46.224] Server  WARN    ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+[06:23:01.630] Server  LOG     ✓ Compiled in 297ms
+[06:23:02.559] Server  WARN    ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+[06:23:31.616] Server  WARN    ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+[06:23:35.704] Server  LOG     ✓ Compiled in 2.9s
+[06:23:39.990] Server  LOG     ✓ Compiled in 19ms
+[06:23:44.421] Server  WARN    ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+[06:23:44.849] Browser ERROR   uncaughtError: ReferenceError: hasSearched is not defined
+[06:23:57.999] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[06:23:58.012] Server  LOG     ✓ Compiled in 854ms
+[06:23:59.606] Server  WARN    ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+[06:24:01.163] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[06:24:37.705] Server  LOG     ✓ Compiled in 1521ms
+[06:25:23.129] Server  LOG     ✓ Compiled in 1002ms
+[06:26:31.046] Server  LOG     ✓ Compiled in 262ms
+[06:26:46.740] Server  WARN    ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+[06:28:44.883] Server  LOG     ✓ Compiled in 283ms
+[06:31:15.779] Server  LOG     ✓ Compiled in 401ms

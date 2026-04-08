@@ -41,3 +41,47 @@ export async function generateNamesAction(
     return { count: 0, results: [] }
   }
 }
+
+export async function getLetterOffsetsAction(
+  targetLength: number,
+  prefix: string,
+  suffix: string,
+  contains: string,
+) {
+  try {
+    const letters = "abcdefghijklmnopqrstuvwxyz".split("")
+    const offsets: Record<string, number> = {}
+    let currentOffset = 0
+
+    // If prefix is already multi-character, A-Z jump doesn't make much sense in the UI
+    // but we can still return offsets for the next possible characters if we wanted.
+    // For now, let's assume this is for "jumping" the first character if no prefix is set,
+    // or jumping within a prefix if suitable.
+
+    // We iterate each possible starting character and get its count.
+    for (const char of letters) {
+      // If a prefix is set, we only care about letters that match the prefix
+      if (prefix && !char.startsWith(prefix) && !prefix.startsWith(char)) {
+        offsets[char] = -1 // Not reachable
+        continue
+      }
+
+      // If prefix is length 1, we are already at that letter.
+      // If prefix is empty, each letter is a branch.
+      const searchPrefix = prefix || char
+      if (prefix && prefix.length > 0 && char !== prefix[0]) {
+        offsets[char] = -1
+        continue
+      }
+
+      const plan = createGenerationPlan(targetLength, searchPrefix, suffix, contains)
+      offsets[char] = currentOffset
+      currentOffset += plan.count
+    }
+
+    return offsets
+  } catch (error) {
+    console.error("Error getting letter offsets:", error)
+    return {}
+  }
+}

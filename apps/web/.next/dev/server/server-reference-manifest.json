@@ -14,6 +14,21 @@
       },
       "filename": "apps/web/app/actions.ts",
       "exportedName": "generateNamesAction"
+    },
+    "780c0a5acfdb2d60d18114cc9bdfc06979f5e4da33": {
+      "workers": {
+        "app/studio/page": {
+          "moduleId": "[project]/apps/web/.next-internal/server/app/studio/page/actions.js { ACTIONS_MODULE0 => \"[project]/apps/web/app/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getLetterOffsetsAction",
+          "filename": "apps/web/app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/studio/page": "action-browser"
+      },
+      "filename": "apps/web/app/actions.ts",
+      "exportedName": "getLetterOffsetsAction"
     }
   },
   "edge": {},
