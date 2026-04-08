@@ -22,45 +22,8 @@ import { toast } from "sonner"
 import { generateNamesAction } from "../app/actions"
 
 const spring = { type: "spring" as const, stiffness: 280, damping: 32, mass: 1.1 }
-const studioShellSpring = { type: "spring" as const, stiffness: 220, damping: 34, mass: 1.1 }
 const fastSpring = { type: "spring" as const, stiffness: 450, damping: 34, mass: 0.75 }
-const panelSpring = { type: "spring" as const, stiffness: 220, damping: 34, mass: 1.1 }
-const resultsStagger = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0.1,
-    },
-  },
-}
-const resultReveal = {
-  hidden: { opacity: 0, y: 12, scale: 0.98 },
-  show: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { type: "spring" as const, stiffness: 300, damping: 25 },
-  },
-}
-const pageStagger = {
-  hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0.04,
-    },
-  },
-}
-const pageReveal = {
-  hidden: { opacity: 0, y: 18 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: "easeOut" as const },
-  },
-}
+const panelSpring = { type: "spring" as const, stiffness: 160, damping: 26, mass: 1.15 }
 
 const platformDescriptions: Record<string, string> = {
   Domain: "Run a live domain search in Domainr.",
@@ -117,8 +80,7 @@ function ResultCard({
   onCheckAvailability: (name: string) => void
 }) {
   return (
-    <motion.div
-      layout
+    <div
       onClick={() => onCheckAvailability(item.name)}
       className={`group border p-5 flex flex-col cursor-pointer relative overflow-hidden ${
         isActive
@@ -216,7 +178,7 @@ function ResultCard({
           </div>
         </div>
       )}
-    </motion.div>
+    </div>
   )
 }
 
@@ -231,7 +193,7 @@ export function Studio({
   const [cliCommand, setCliCommand] = useState("wordloom -l 5")
 
   const [length, setLength] = useState([5])
-  const [isGenerating, setIsGenerating] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false) // eslint-disable-line @typescript-eslint/no-unused-vars
   const [prefix, setPrefix] = useState("")
   const [suffix, setSuffix] = useState("")
   const [contains, setContains] = useState("")
@@ -249,13 +211,17 @@ export function Studio({
 
   // Bookmarks State
   const [bookmarks, setBookmarks] = useState<{ name: string; meaning: string }[]>([])
+  const [hasMounted, setHasMounted] = useState(false)
 
   useEffect(() => {
+    setHasMounted(true)
     const saved = localStorage.getItem("wordloom_bookmarks")
     if (saved) {
       try {
         setBookmarks(JSON.parse(saved))
-      } catch {}
+      } catch (e) {
+        console.error("Failed to parse bookmarks", e)
+      }
     }
   }, [])
 
@@ -309,7 +275,6 @@ export function Studio({
   }
 
   const handleGenerate = () => {
-    setIsGenerating(true)
     startTransition(async () => {
       let finalLength = length[0] ?? 5
       let finalPrefix = prefix
@@ -377,25 +342,11 @@ export function Studio({
     : []
 
   return (
-    <motion.div
-      variants={pageStagger}
-      initial="hidden"
-      animate="show"
-      transition={panelSpring}
-      className="flex flex-col h-full relative z-20"
-    >
+    <div className="flex flex-col h-full relative z-20">
       {/* Header */}
-      <motion.header
-        variants={pageReveal}
-        className="border-b border-[#1a1a1a] p-6 lg:p-8 flex justify-between items-center shrink-0"
-      >
+      <header className="border-b border-[#1a1a1a] p-6 lg:p-8 flex justify-between items-center shrink-0">
         <div className="flex items-center gap-4">
-          <motion.h1
-            layoutId="studio-title"
-            className="font-serif text-3xl font-bold uppercase tracking-tighter"
-          >
-            Studio
-          </motion.h1>
+          <h2 className="font-serif text-3xl font-bold uppercase tracking-tighter">Studio</h2>
           <div className="hidden sm:flex border border-[#1a1a1a] text-xs font-mono ml-4">
             <button
               onClick={() => setMode("ui")}
@@ -413,7 +364,7 @@ export function Studio({
               onClick={() => setMode("bookmarks")}
               className={`px-3 py-1 flex items-center gap-2 transition-colors ${mode === "bookmarks" ? "bg-[#1a1a1a] text-[#ecebe5]" : "text-[#1a1a1a] hover:bg-neutral-100"}`}
             >
-              <Bookmark className="w-3 h-3" /> Saved ({bookmarks.length})
+              <Bookmark className="w-3 h-3" /> Saved ({hasMounted ? bookmarks.length : 0})
             </button>
           </div>
         </div>
@@ -423,15 +374,11 @@ export function Studio({
         >
           <ArrowLeft className="w-4 h-4" /> Return
         </button>
-      </motion.header>
+      </header>
 
-      <motion.div variants={pageReveal} className="flex-1 min-h-0 flex flex-col md:flex-row">
+      <div className="flex-1 min-h-0 flex flex-col md:flex-row">
         {/* Controls Sidebar */}
-        <motion.div
-          layout
-          transition={spring}
-          className="w-full md:w-[22rem] lg:w-[23rem] xl:w-[24rem] shrink-0 border-b md:border-b-0 md:border-r border-[#1a1a1a] bg-[#f8f7f2] p-6 lg:p-8 flex flex-col gap-8 overflow-y-auto"
-        >
+        <div className="w-full md:w-[22rem] lg:w-[23rem] xl:w-[24rem] shrink-0 border-b md:border-b-0 md:border-r border-[#1a1a1a] bg-[#f8f7f2] p-6 lg:p-8 flex flex-col gap-8 overflow-y-auto">
           {/* Mobile Mode Toggle */}
           <div className="sm:hidden flex flex-wrap border border-[#1a1a1a] text-xs font-mono">
             <button
@@ -517,20 +464,23 @@ export function Studio({
                 />
               </div>
 
-              <Button
-                onClick={handleGenerate}
-                disabled={isPending}
-                asChild
-                className="mt-auto rounded-none bg-[#1a1a1a] text-white uppercase font-mono text-xs font-bold tracking-[0.2em] relative overflow-hidden"
-              >
-                <motion.button
-                  animate={isGenerating ? { scale: [1, 0.95, 1] } : { scale: 1 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  onAnimationComplete={() => setIsGenerating(false)}
-                >
-                  <span className="relative z-10">Generate</span>
-                </motion.button>
-              </Button>
+              <div className="mt-auto space-y-2">
+                <div className="flex justify-between items-center px-1">
+                  <span className="font-mono text-[10px] uppercase opacity-40">Loom Status</span>
+                  <span className="font-mono text-[10px] uppercase text-[#1a1a1a] font-bold">
+                    {isPending ? "Weaving..." : "Ready"}
+                  </span>
+                </div>
+                <div className="pt-2 pr-2">
+                  <button
+                    onClick={handleGenerate}
+                    disabled={isPending}
+                    className="w-full h-14 bg-white text-[#1a1a1a] border-2 border-[#1a1a1a] font-serif font-bold uppercase tracking-[0.2em] text-sm shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] hover:bg-[#1a1a1a] hover:text-white active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:shadow-none disabled:translate-x-[4px] disabled:translate-y-[4px] transition-none flex items-center justify-center"
+                  >
+                    {isPending ? "Processing" : "Generate"}
+                  </button>
+                </div>
+              </div>
             </>
           )}
 
@@ -589,36 +539,24 @@ export function Studio({
               )}
             </div>
           )}
-        </motion.div>
+        </div>
 
-        {/* Results + Availability */}
-        <motion.div
-          variants={pageReveal}
-          layout
-          transition={spring}
-          className="min-w-0 flex-1 bg-white min-h-0"
-        >
+        {/* Results Container */}
+        <div className="min-w-0 flex-1 bg-white min-h-0">
           <div className="flex h-full min-h-0">
-            <motion.div
-              layout="position"
-              transition={spring}
-              className="flex-1 p-6 lg:p-8 flex flex-col min-w-0 min-h-0"
-            >
+            {/* Feed Section */}
+            <div className="flex-1 p-6 lg:p-8 flex flex-col min-w-0 min-h-0">
               <div className="flex justify-between items-center border-b border-[#1a1a1a] pb-4 mb-6 shrink-0">
                 <h2 className="font-sans font-semibold uppercase text-sm tracking-widest opacity-60">
                   {mode === "bookmarks" ? "Saved Directory" : "Result Feed"}
                 </h2>
-                <motion.span
-                  layout
-                  transition={fastSpring}
-                  className="font-mono text-xs uppercase px-2 py-1 bg-[#ecebe5] text-[#1a1a1a]"
-                >
+                <span className="font-mono text-xs uppercase px-2 py-1 bg-[#ecebe5] text-[#1a1a1a]">
                   {mode === "bookmarks"
                     ? `${bookmarks.length} saved`
                     : data
                       ? `${data.count} found`
                       : "Idle"}
-                </motion.span>
+                </span>
               </div>
 
               <div className="flex-1 overflow-y-auto pr-2">
@@ -637,16 +575,12 @@ export function Studio({
                 ) : (
                   <div className="space-y-4 pb-12">
                     {mode !== "bookmarks" && (
-                      <motion.p
-                        layout
-                        transition={fastSpring}
-                        className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#1a1a1a]/60"
-                      >
+                      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#1a1a1a]/60">
                         Click a generated name to check domain and social availability
-                      </motion.p>
+                      </p>
                     )}
 
-                    <motion.div className="space-y-12">
+                    <div className="space-y-12">
                       {groupedResults ? (
                         Object.entries(groupedResults)
                           .sort(([a], [b]) => a.localeCompare(b))
@@ -656,7 +590,7 @@ export function Studio({
                                 {letter}
                               </h3>
                               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {items.map((item, i) => (
+                                {items.map((item) => (
                                   <ResultCard
                                     key={item.name}
                                     item={item}
@@ -693,12 +627,13 @@ export function Studio({
                           ))}
                         </div>
                       )}
-                    </motion.div>
+                    </div>
                   </div>
                 )}
               </div>
-            </motion.div>
+            </div>
 
+            {/* Desktop Availability Aside */}
             <AnimatePresence initial={false}>
               {availabilityTarget && (
                 <motion.aside
@@ -750,7 +685,7 @@ export function Studio({
                     </p>
 
                     <div className="mt-6 grid gap-3">
-                      {availabilityLinks.map((link, index) => (
+                      {availabilityLinks.map((link) => (
                         <motion.a
                           key={link.label}
                           href={link.href}
@@ -761,8 +696,8 @@ export function Studio({
                           transition={{ duration: 0.1, ease: "easeOut" }}
                           whileHover={{
                             x: 4,
-                            backgroundColor: "#C2A15D",
-                            color: "#white",
+                            backgroundColor: "#1a1a1a",
+                            color: "#ecebe5",
                             transition: { duration: 0.08, ease: "easeOut" },
                           }}
                           whileTap={{ scale: 0.98 }}
@@ -786,6 +721,7 @@ export function Studio({
             </AnimatePresence>
           </div>
 
+          {/* Mobile Availability Panel */}
           <AnimatePresence initial={false}>
             {availabilityTarget && (
               <motion.div
@@ -825,8 +761,8 @@ export function Studio({
                       rel="noreferrer"
                       whileTap={{ scale: 0.985 }}
                       whileHover={{
-                        backgroundColor: "#C2A15D",
-                        color: "#white",
+                        backgroundColor: "#1a1a1a",
+                        color: "#ecebe5",
                         transition: { duration: 0.08, ease: "easeOut" },
                       }}
                       className="border border-[#1a1a1a] px-4 py-4 text-[#1a1a1a]"
@@ -846,8 +782,8 @@ export function Studio({
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
-      </motion.div>
-    </motion.div>
+        </div>
+      </div>
+    </div>
   )
 }

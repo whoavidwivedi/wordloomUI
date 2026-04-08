@@ -5,7 +5,6 @@ import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { Slider } from "@workspace/ui/components/slider"
 import { ArrowLeft, Bookmark, BookmarkCheck, Copy, LayoutDashboard, Terminal } from "lucide-react"
-import { motion } from "motion/react"
 import Link from "next/link"
 import { useState, useTransition, useEffect } from "react"
 import { toast } from "sonner"
@@ -40,7 +39,6 @@ export default function TryPage() {
   const [cliCommand, setCliCommand] = useState("wordloom -l 5")
 
   const [length, setLength] = useState([5])
-  const [isGenerating, setIsGenerating] = useState(false)
   const [prefix, setPrefix] = useState("")
   const [suffix, setSuffix] = useState("")
   const [contains, setContains] = useState("")
@@ -53,13 +51,17 @@ export default function TryPage() {
 
   // Bookmarks State
   const [bookmarks, setBookmarks] = useState<{ name: string; meaning: string }[]>([])
+  const [hasMounted, setHasMounted] = useState(false)
 
   useEffect(() => {
+    setHasMounted(true)
     const saved = localStorage.getItem("wordloom_bookmarks")
     if (saved) {
       try {
         setBookmarks(JSON.parse(saved))
-      } catch {}
+      } catch (e) {
+        console.error("Failed to parse bookmarks", e)
+      }
     }
   }, [])
 
@@ -80,7 +82,6 @@ export default function TryPage() {
   }
 
   const handleGenerate = () => {
-    setIsGenerating(true)
     startTransition(async () => {
       let finalLength = length[0] ?? 5
       let finalPrefix = prefix
@@ -134,7 +135,7 @@ export default function TryPage() {
                 onClick={() => setMode("bookmarks")}
                 className={`px-3 py-1 flex items-center gap-2 transition-colors ${mode === "bookmarks" ? "bg-[#1a1a1a] text-[#ecebe5]" : "text-[#1a1a1a] hover:bg-neutral-100"}`}
               >
-                <Bookmark className="w-3 h-3" /> Saved ({bookmarks.length})
+                <Bookmark className="w-3 h-3" /> Saved ({hasMounted ? bookmarks.length : 0})
               </button>
             </div>
           </div>
@@ -237,20 +238,23 @@ export default function TryPage() {
                   />
                 </div>
 
-                <Button
-                  onClick={handleGenerate}
-                  disabled={isPending}
-                  asChild
-                  className="mt-auto rounded-none bg-[#1a1a1a] text-white uppercase font-mono text-xs font-bold tracking-[0.2em] relative overflow-hidden"
-                >
-                  <motion.button
-                    animate={isGenerating ? { scale: [1, 0.95, 1] } : { scale: 1 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    onAnimationComplete={() => setIsGenerating(false)}
-                  >
-                    <span className="relative z-10">Generate</span>
-                  </motion.button>
-                </Button>
+                <div className="mt-auto space-y-2">
+                  <div className="flex justify-between items-center px-1">
+                    <span className="font-mono text-[10px] uppercase opacity-40">Loom Status</span>
+                    <span className="font-mono text-[10px] uppercase text-[#1a1a1a] font-bold">
+                      {isPending ? "Weaving..." : "Ready"}
+                    </span>
+                  </div>
+                  <div className="pt-2 pr-2">
+                    <button
+                      onClick={handleGenerate}
+                      disabled={isPending}
+                      className="w-full h-14 bg-white text-[#1a1a1a] border-2 border-[#1a1a1a] font-serif font-bold uppercase tracking-[0.2em] text-sm shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] hover:bg-[#1a1a1a] hover:text-white active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:shadow-none disabled:translate-x-[4px] disabled:translate-y-[4px] transition-none flex items-center justify-center"
+                    >
+                      {isPending ? "Processing" : "Generate"}
+                    </button>
+                  </div>
+                </div>
               </>
             )}
 

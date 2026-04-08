@@ -2,7 +2,7 @@
 
 import { ArrowLeft, Copy, Check } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 const shellSpring = { type: "spring" as const, stiffness: 220, damping: 34, mass: 1.1 }
 const stagger = {
@@ -56,58 +56,32 @@ export function CLIDocs({ onBack }: { onBack: () => void }) {
     return () => window.clearTimeout(timeout)
   }, [copiedState])
 
-  const handleCopy = (cmd: string, index: number) => {
+  const handleCopy = useCallback((cmd: string, index: number) => {
     navigator.clipboard.writeText(cmd)
     setCopiedState({ index, key: Date.now() })
-  }
+  }, [])
 
   return (
-    <motion.div
-      className="w-full h-full flex flex-col relative z-20 overflow-hidden"
-      transition={shellSpring}
-    >
-      <motion.div
-        variants={stagger}
-        initial="hidden"
-        animate="show"
-        exit={{ opacity: 0 }}
-        className="flex flex-col h-full"
-      >
-        <motion.header
-          variants={reveal}
-          className="border-b border-[#1a1a1a] p-6 lg:p-8 flex justify-between items-center shrink-0"
-        >
-          <motion.h1
-            layoutId="docs-title"
-            className="font-serif text-3xl font-bold uppercase tracking-tighter"
-          >
-            CLI Commands
-          </motion.h1>
+    <div className="w-full h-full flex flex-col relative z-20 overflow-hidden">
+      <div className="flex flex-col h-full">
+        <header className="border-b border-[#1a1a1a] p-6 lg:p-8 flex justify-between items-center shrink-0">
+          <h1 className="font-serif text-3xl font-bold uppercase tracking-tighter">CLI Commands</h1>
           <button
             onClick={onBack}
             className="font-mono text-xs uppercase hover:underline opacity-60 flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" /> Return
           </button>
-        </motion.header>
+        </header>
 
-        <motion.div
-          variants={reveal}
-          className="p-6 lg:p-8 flex-1 flex flex-col gap-6 bg-[#f8f7f2] overflow-y-auto"
-        >
+        <div className="p-6 lg:p-8 flex-1 flex flex-col gap-6 bg-[#f8f7f2] overflow-y-auto">
           <p className="font-sans text-sm opacity-70">
             Use these commands in your terminal or the CLI tab in the Studio.
           </p>
 
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            animate="show"
-            className="flex flex-col gap-4"
-          >
+          <div className="flex flex-col gap-4">
             {commands.map((c, i) => (
-              <motion.div
-                variants={reveal}
+              <div
                 key={i}
                 className="flex flex-col sm:flex-row sm:items-center justify-between border border-[#1a1a1a] bg-white p-4 gap-4"
               >
@@ -145,11 +119,11 @@ export function CLIDocs({ onBack }: { onBack: () => void }) {
                     <Copy className="w-4 h-4" />
                   )}
                 </motion.button>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
-        </motion.div>
-      </motion.div>
-    </motion.div>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
