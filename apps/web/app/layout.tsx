@@ -1,8 +1,11 @@
 import "@workspace/ui/globals.css"
 import type { Metadata } from "next"
+import dynamic from "next/dynamic"
 import { Toaster } from "sonner"
 
 import { ThemeProvider } from "@/components/theme-provider"
+
+const Background = dynamic(() => import("@/components/Background"), { ssr: false })
 
 export const metadata: Metadata = {
   title: "Wordloom — The Engineering Issue",
@@ -53,6 +56,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className="antialiased">
       <body>
         <ThemeProvider>
+          <Background />
           {children}
           <Toaster
             position="bottom-right"

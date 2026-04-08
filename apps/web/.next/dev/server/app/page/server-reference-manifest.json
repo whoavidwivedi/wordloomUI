@@ -1,20 +1,4 @@
 {
-  "node": {
-    "787b79c38172d5d154dbf841964f5eb79cef7d162b": {
-      "workers": {
-        "app/page": {
-          "moduleId": "[project]/apps/web/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/apps/web/app/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
-          "async": false,
-          "exportedName": "generateNamesAction",
-          "filename": "apps/web/app/actions.ts"
-        }
-      },
-      "layer": {
-        "app/page": "action-browser"
-      },
-      "exportedName": "generateNamesAction",
-      "filename": "apps/web/app/actions.ts"
-    }
-  },
+  "node": {},
   "edge": {}
 }
