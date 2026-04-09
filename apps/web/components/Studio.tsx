@@ -583,6 +583,12 @@ export function Studio({
                   id="prefix"
                   value={prefix}
                   onChange={(e) => setPrefix(e.target.value.replace(/[^a-zA-Z]/g, ""))}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault()
+                      handleGenerate()
+                    }
+                  }}
                   placeholder="lu"
                   maxLength={length[0]}
                   className="rounded-none border-[#1a1a1a] h-10 uppercase font-bold tracking-widest"
@@ -597,6 +603,12 @@ export function Studio({
                   id="suffix"
                   value={suffix}
                   onChange={(e) => setSuffix(e.target.value.replace(/[^a-zA-Z]/g, ""))}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault()
+                      handleGenerate()
+                    }
+                  }}
                   placeholder="id"
                   maxLength={length[0]}
                   className="rounded-none border-[#1a1a1a] h-10 uppercase font-bold tracking-widest"
@@ -611,6 +623,12 @@ export function Studio({
                   id="contains"
                   value={contains}
                   onChange={(e) => setContains(e.target.value.replace(/[^a-zA-Z]/g, ""))}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault()
+                      handleGenerate()
+                    }
+                  }}
                   placeholder="min"
                   maxLength={length[0]}
                   className="rounded-none border-[#1a1a1a] h-10 uppercase font-bold tracking-widest"
@@ -736,31 +754,6 @@ export function Studio({
               </div>
 
               <div className="flex-1 overflow-y-auto pr-2">
-                {mode !== "bookmarks" && Object.keys(letterOffsets).length > 0 && (
-                  <div className="flex flex-row flex-nowrap items-center gap-1 mb-2 sticky top-0 bg-white z-20 overflow-x-auto no-scrollbar py-0.5">
-                    {"abcdefghijklmnopqrstuvwxyz".split("").map((l) => {
-                      const isAvailable = letterOffsets[l] !== undefined && letterOffsets[l] !== -1
-                      return (
-                        <button
-                          key={l}
-                          disabled={!isAvailable}
-                          onClick={() => jumpToLetter(l)}
-                          className={`text-[10px] font-mono uppercase transition-all px-0.5 bg-transparent border-none
-                            ${
-                              activeLetter === l
-                                ? "text-black font-bold"
-                                : isAvailable
-                                  ? "text-neutral-400 hover:text-black"
-                                  : "text-neutral-200 cursor-not-allowed"
-                            }
-                          `}
-                        >
-                          {l}
-                        </button>
-                      )
-                    })}
-                  </div>
-                )}
 
                 {isPending ? (
                   <div className="h-full flex flex-col items-center justify-center opacity-30 gap-4">
@@ -999,6 +992,35 @@ export function Studio({
           </AnimatePresence>
         </div>
       </div>
+      {mode !== "bookmarks" && Object.keys(letterOffsets).length > 0 && (
+        <div className="shrink-0 border-t border-[#1a1a1a] bg-white pt-4 pb-6 px-8 z-30">
+          <div className="flex flex-row flex-nowrap items-center justify-between w-full max-w-7xl mx-auto">
+            {"abcdefghijklmnopqrstuvwxyz".split("").map((l) => {
+              const isAvailable = letterOffsets[l] !== undefined && letterOffsets[l] !== -1
+              return (
+                <button
+                  key={l}
+                  disabled={!isAvailable}
+                  onClick={() => jumpToLetter(l)}
+                  className={`flex-1 text-center text-[11px] font-mono uppercase transition-all px-0.5 bg-transparent border-none
+                    ${
+                      activeLetter === l
+                        ? "text-black font-extrabold scale-110"
+                        : isAvailable
+                          ? "text-neutral-500 hover:text-black"
+                          : "text-neutral-300 cursor-not-allowed"
+                    }
+                  `}
+                >
+                  <span className={!isAvailable ? "line-through opacity-40" : ""}>
+                    {l}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

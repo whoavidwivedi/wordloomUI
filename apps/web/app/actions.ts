@@ -75,8 +75,12 @@ export async function getLetterOffsetsAction(
       }
 
       const plan = createGenerationPlan(targetLength, searchPrefix, suffix, contains)
-      offsets[char] = currentOffset
-      currentOffset += plan.count
+      if (plan.count > 0) {
+        offsets[char] = currentOffset
+        currentOffset += plan.count
+      } else {
+        offsets[char] = -1
+      }
     }
 
     return offsets
