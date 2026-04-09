@@ -6,6 +6,7 @@ import { Label } from "@workspace/ui/components/label"
 import { Slider } from "@workspace/ui/components/slider"
 import { ArrowLeft, Bookmark, BookmarkCheck, Copy, LayoutDashboard, Terminal } from "lucide-react"
 import Link from "next/link"
+import { AnimatePresence, motion } from "motion/react"
 import { useState, useTransition, useEffect, useRef, memo, useCallback } from "react"
 import { toast } from "sonner"
 
@@ -47,8 +48,8 @@ const TryResultCard = memo(function TryResultCard({
 }) {
   return (
     <div
-      style={{ contentVisibility: "auto", containIntrinsicSize: "0 140px" } as any}
-      className="border border-[#1a1a1a] p-4 flex flex-col group hover:bg-[#1a1a1a] hover:text-white transition-colors cursor-default relative"
+      style={{ contentVisibility: "auto", containIntrinsicSize: "0 160px" } as any}
+      className="border border-[#1a1a1a] p-4 flex flex-col h-[160px] group hover:bg-[#1a1a1a] hover:text-white transition-colors cursor-default relative"
     >
       <button
         onClick={() => onToggleBookmark(item)}
@@ -78,16 +79,22 @@ const TryResultCard = memo(function TryResultCard({
           {item.name}
         </span>
       </div>
-      {item.meaning && (
-        <>
-          <p className="font-sans text-xs opacity-70 group-hover:opacity-100 line-clamp-3 leading-relaxed pr-8">
-            {item.meaning}
-          </p>
-          <span className="absolute bottom-2 right-2 text-[8px] font-mono uppercase bg-[#1a1a1a] text-[#ecebe5] group-hover:bg-[#ecebe5] group-hover:text-[#1a1a1a] px-1 py-0.5 pointer-events-none">
-            Def
+      
+      <div className="flex-1 flex flex-col justify-between">
+        <div className="font-sans text-xs opacity-70 group-hover:opacity-100 line-clamp-3 leading-relaxed pr-8">
+          {item.meaning}
+        </div>
+        <div className="flex items-center gap-2 h-4">
+          {item.meaning && (
+            <span className="text-[8px] font-mono uppercase bg-[#1a1a1a] text-[#ecebe5] group-hover:bg-[#ecebe5] group-hover:text-[#1a1a1a] px-1 py-0.5 pointer-events-none">
+              Def
+            </span>
+          )}
+          <span className="text-[8px] font-mono uppercase opacity-40 group-hover:opacity-60">
+            {item.name.length} chars
           </span>
-        </>
-      )}
+        </div>
+      </div>
     </div>
   )
 })
@@ -115,8 +122,9 @@ export default function TryPage() {
   const [letterOffsets, setLetterOffsets] = useState<Record<string, number>>({})
   const [activeLetter, setActiveLetter] = useState<string>("a")
   const [hasSearched, setHasSearched] = useState(false)
+  const [pendingLetter, setPendingLetter] = useState<string | null>(null)
 
-  const sentinelRef = useRef<HTMLDivElement>(null)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
   const resultsCache = useRef<Record<number, { results: { name: string; meaning: string }[]; hasMore: boolean; totalCount: number }>>({})
 
   useEffect(() => {
@@ -232,34 +240,50 @@ export default function TryPage() {
     })
   }
 
+  const scrollToLetterSection = (letter: string) => {
+    requestAnimationFrame(() => {
+      const container = scrollContainerRef.current
+      if (!container) return
+      
+      const element = container.querySelector(`[data-letter="${letter.toLowerCase()}"]`) as HTMLElement
+      if (element) {
+        // Calculate offset relative to the container
+        const targetScroll = element.offsetTop
+        container.scrollTop = targetScroll
+      }
+    })
+  }
+
   const jumpToLetter = (letter: string) => {
     const offset = letterOffsets[letter]
     if (offset === undefined || offset === -1) return
 
     // 1. Check if already in current results (DOM check)
-    const element = document.querySelector(`[data-letter="${letter.toUpperCase()}"]`)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" })
-      setActiveLetter(letter)
-      return
-    }
-
+    scrollToLetterSection(letter)
+    setActiveLetter(letter)
+    
     // 2. Check Cache
     const cached = resultsCache.current[offset]
     if (cached) {
-      setResults(cached.results)
+      setResults((prev) => {
+        const map = new Map(prev.map((i) => [i.name, i]))
+        cached.results.forEach((i) => map.set(i.name, i))
+        return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name))
+      })
       setSkip(offset + cached.results.length)
       setHasMore(cached.hasMore)
       setTotalCount(cached.totalCount)
       setActiveLetter(letter)
+      setPendingLetter(null)
+      scrollToLetterSection(letter)
       return
     }
 
     // 3. Fetch (Cache Miss)
-    setResults([])
     setSkip(offset)
     setHasMore(true)
     setActiveLetter(letter)
+    setPendingLetter(letter.toLowerCase())
 
     startTransition(async () => {
       let finalLength = length[0] ?? 5
@@ -284,7 +308,11 @@ export default function TryPage() {
         500,
       )
 
-      setResults(res.results)
+      setResults((prev) => {
+        const map = new Map(prev.map((i) => [i.name, i]))
+        res.results.forEach((i) => map.set(i.name, i))
+        return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name))
+      })
       setSkip(offset + res.results.length)
       setHasMore(offset + res.results.length < totalCount)
 
@@ -294,6 +322,9 @@ export default function TryPage() {
         hasMore: offset + res.results.length < totalCount,
         totalCount: totalCount,
       }
+
+      setPendingLetter(null)
+      scrollToLetterSection(letter)
     })
   }
 
@@ -323,7 +354,11 @@ export default function TryPage() {
         500,
       )
 
-      setResults((prev) => [...prev, ...res.results])
+      setResults((prev) => {
+        const map = new Map(prev.map((i) => [i.name, i]))
+        res.results.forEach((i) => map.set(i.name, i))
+        return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name))
+      })
       setSkip((prev) => prev + res.results.length)
       setHasMore(results.length + res.results.length < res.count)
     })
@@ -619,15 +654,13 @@ export default function TryPage() {
               </span>
             </div>
 
-            <div className="flex-1 overflow-y-auto pr-2">
+            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto pr-2 relative">
 
-              {isPending ? (
+              {isPending && skip === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center opacity-30 gap-4">
                   <div className="w-8 h-8 border-2 border-[#1a1a1a] border-t-transparent rounded-full animate-spin" />
                   <p className="font-mono text-[10px] uppercase tracking-widest">
-                    {skip === 0
-                      ? "Generating exhaustive set..."
-                      : `Navigating to ${activeLetter}...`}
+                    Generating exhaustive set...
                   </p>
                 </div>
               ) : displayedResults.length === 0 ? (
@@ -641,21 +674,25 @@ export default function TryPage() {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-12">
-                  {displayedResults.map((item, i) => (
-                    <div key={item.name} data-letter={item.name[0]?.toLowerCase()}>
-                      <TryResultCard
-                        item={item}
-                        isSaved={bookmarks.some((b) => b.name === item.name)}
-                        onToggleBookmark={toggleBookmark}
-                        onCopy={handleCopy}
-                      />
-                    </div>
-                  ))}
+                <div className="space-y-12 pb-12">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {displayedResults.map((item, i) => (
+                      <div key={item.name} data-letter={item.name[0]?.toLowerCase()}>
+                        <TryResultCard
+                          item={item}
+                          isSaved={bookmarks.some((b) => b.name === item.name)}
+                          onToggleBookmark={toggleBookmark}
+                          onCopy={handleCopy}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+
                   {mode !== "bookmarks" && hasMore && (
                     <div
                       ref={sentinelRef}
-                      className="col-span-1 sm:col-span-2 py-8 flex flex-col items-center gap-4"
+                      className="py-8 flex flex-col items-center gap-4"
                     >
                       <div className="w-8 h-8 border-2 border-[#1a1a1a] border-t-transparent rounded-full animate-spin" />
                       <p className="font-mono text-[10px] uppercase opacity-40">

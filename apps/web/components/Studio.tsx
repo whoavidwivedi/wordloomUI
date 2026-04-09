@@ -84,7 +84,7 @@ const ResultCard = memo(function ResultCard({
     <div
       onClick={() => onCheckAvailability(item.name)}
       style={{ contentVisibility: "auto", containIntrinsicSize: "0 160px" } as any}
-      className={`group border p-5 flex flex-col cursor-pointer relative overflow-hidden ${
+      className={`group border p-5 flex flex-col h-[160px] cursor-pointer relative overflow-hidden ${
         isActive
           ? "border-[#C2A15D] bg-[#C2A15D] text-white shadow-xl ring-2 ring-[#C2A15D]/20"
           : "border-[#1a1a1a] bg-white hover:bg-[#1a1a1a] hover:text-white transition-colors duration-100 ease-out"
@@ -165,21 +165,21 @@ const ResultCard = memo(function ResultCard({
         </div>
       </div>
 
-      {item.meaning && (
-        <div className="relative z-10">
-          <p className="font-sans text-xs opacity-70 group-hover:opacity-90 leading-relaxed line-clamp-2">
-            {item.meaning}
-          </p>
-          <div className="mt-3 flex items-center gap-2">
+      <div className="flex-1 flex flex-col justify-between relative z-10">
+        <div className="font-sans text-xs opacity-70 group-hover:opacity-90 leading-relaxed line-clamp-3">
+          {item.meaning}
+        </div>
+        <div className="mt-3 flex items-center gap-2 h-4">
+          {item.meaning && (
             <span className="text-[8px] font-mono uppercase bg-[#1a1a1a] text-white px-1.5 py-0.5 group-hover:bg-white group-hover:text-[#1a1a1a] transition-colors">
               def
             </span>
-            <span className="text-[8px] font-mono uppercase opacity-40 group-hover:opacity-60">
-              {item.name.length} chars
-            </span>
-          </div>
+          )}
+          <span className="text-[8px] font-mono uppercase opacity-40 group-hover:opacity-60">
+            {item.name.length} chars
+          </span>
         </div>
-      )}
+      </div>
     </div>
   )
 })
@@ -213,6 +213,8 @@ export function Studio({
   const [letterOffsets, setLetterOffsets] = useState<Record<string, number>>({})
   const [activeLetter, setActiveLetter] = useState<string>("a")
   const [hasSearched, setHasSearched] = useState(false)
+  const [pendingLetter, setPendingLetter] = useState<string | null>(null)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   // Bookmarks State
   const [bookmarks, setBookmarks] = useState<{ name: string; meaning: string }[]>([])
@@ -368,34 +370,50 @@ export function Studio({
     })
   }
 
+  const scrollToLetterSection = (letter: string) => {
+    requestAnimationFrame(() => {
+      const container = scrollContainerRef.current
+      if (!container) return
+      
+      const element = container.querySelector(`[data-letter="${letter.toUpperCase()}"]`) as HTMLElement
+      if (element) {
+        // Calculate offset relative to the container
+        const targetScroll = element.offsetTop
+        container.scrollTop = targetScroll
+      }
+    })
+  }
+
   const jumpToLetter = (letter: string) => {
     const offset = letterOffsets[letter]
     if (offset === undefined || offset === -1) return
 
     // 1. Check if already in current results (DOM check)
-    const element = document.querySelector(`[data-letter="${letter.toUpperCase()}"]`)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" })
-      setActiveLetter(letter)
-      return
-    }
-
-    // 2. Check Cache
+    scrollToLetterSection(letter)
+    setActiveLetter(letter)
+    
+    // 2. Check Cache (Optimization)
     const cached = resultsCache.current[offset]
     if (cached) {
-      setResults(cached.results)
+      setPendingLetter(null) // Ensure cleared on cache hit
+      setResults((prev) => {
+        const map = new Map(prev.map((i) => [i.name, i]))
+        cached.results.forEach((i) => map.set(i.name, i))
+        return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name))
+      })
       setSkip(offset + cached.results.length)
       setHasMore(cached.hasMore)
       setTotalCount(cached.totalCount)
       setActiveLetter(letter)
+      scrollToLetterSection(letter)
       return
     }
 
     // 3. Fetch (Cache Miss)
-    setResults([])
     setSkip(offset)
     setHasMore(true)
     setActiveLetter(letter)
+    setPendingLetter(letter.toUpperCase())
 
     startTransition(async () => {
       let finalLength = length[0] ?? 5
@@ -420,7 +438,11 @@ export function Studio({
         500,
       )
 
-      setResults(res.results)
+      setResults((prev) => {
+        const map = new Map(prev.map((i) => [i.name, i]))
+        res.results.forEach((i) => map.set(i.name, i))
+        return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name))
+      })
       setSkip(offset + res.results.length)
       setHasMore(offset + res.results.length < totalCount)
 
@@ -430,6 +452,9 @@ export function Studio({
         hasMore: offset + res.results.length < totalCount,
         totalCount: totalCount,
       }
+
+      setPendingLetter(null)
+      scrollToLetterSection(letter)
     })
   }
 
@@ -459,7 +484,11 @@ export function Studio({
         500,
       )
 
-      setResults((prev) => [...prev, ...res.results])
+      setResults((prev) => {
+        const map = new Map(prev.map((i) => [i.name, i]))
+        res.results.forEach((i) => map.set(i.name, i))
+        return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name))
+      })
       setSkip((prev) => prev + res.results.length)
       setHasMore(results.length + res.results.length < res.count)
     })
@@ -791,15 +820,13 @@ export function Studio({
                 </span>
               </div>
 
-              <div className="flex-1 overflow-y-auto pr-2">
+               <div ref={scrollContainerRef} className="flex-1 overflow-y-auto pr-2 relative">
 
-                {isPending ? (
+                {isPending && skip === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center opacity-30 gap-4">
                     <div className="w-8 h-8 border-2 border-[#1a1a1a] border-t-transparent rounded-full animate-spin" />
                     <p className="font-mono text-[10px] uppercase tracking-widest">
-                      {skip === 0
-                        ? "Generating exhaustive set..."
-                        : `Navigating to ${activeLetter}...`}
+                      Generating exhaustive set...
                     </p>
                   </div>
                 ) : displayedResults.length === 0 ? (
@@ -816,36 +843,37 @@ export function Studio({
                   <div className="space-y-4 pb-12">
                     <div className="space-y-12">
                       {groupedResults ? (
-                        Object.entries(groupedResults)
-                          .sort(([a], [b]) => a.localeCompare(b))
-                          .map(([letter, items]) => (
-                            <section
-                              key={letter}
-                              data-letter={letter}
-                              className="space-y-4 pt-4 -mt-4"
-                            >
-                              <h3 className="font-mono text-xs font-bold bg-[#1a1a1a] text-white w-8 h-8 flex items-center justify-center">
-                                {letter}
-                              </h3>
-                              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {items.map((item) => (
-                                  <ResultCard
-                                    key={item.name}
-                                    item={item}
-                                    isSaved={bookmarks.some((b) => b.name === item.name)}
-                                    isActive={availabilityTarget === item.name}
-                                    isCopied={copyFeedback?.name === item.name}
-                                    isBookmarkAnimating={bookmarkFeedback?.name === item.name}
-                                    copyFeedbackKey={copyFeedback?.key}
-                                    bookmarkFeedbackKey={bookmarkFeedback?.key}
-                                    onToggleBookmark={toggleBookmark}
-                                    onCopy={handleCopy}
-                                    onCheckAvailability={setAvailabilityTarget}
-                                  />
-                                ))}
-                              </div>
-                            </section>
-                          ))
+                        (() => {
+                        const entries = Object.entries(groupedResults).sort(([a], [b]) => a.localeCompare(b))
+                        return entries.map(([letter, items]) => (
+                          <section
+                            key={letter}
+                            data-letter={letter}
+                            className="space-y-4 pt-4 -mt-4"
+                          >
+                            <h3 className="font-mono text-xs font-bold bg-[#1a1a1a] text-white w-8 h-8 flex items-center justify-center">
+                              {letter}
+                            </h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                              {items.map((item) => (
+                                <ResultCard
+                                  key={item.name}
+                                  item={item}
+                                  isSaved={bookmarks.some((b) => b.name === item.name)}
+                                  isActive={availabilityTarget === item.name}
+                                  isCopied={copyFeedback?.name === item.name}
+                                  isBookmarkAnimating={bookmarkFeedback?.name === item.name}
+                                  copyFeedbackKey={copyFeedback?.key}
+                                  bookmarkFeedbackKey={bookmarkFeedback?.key}
+                                  onToggleBookmark={toggleBookmark}
+                                  onCopy={handleCopy}
+                                  onCheckAvailability={setAvailabilityTarget}
+                                />
+                              ))}
+                            </div>
+                          </section>
+                        ))
+                        })()
                       ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           {displayedResults.map((item) => (
@@ -865,15 +893,15 @@ export function Studio({
                           ))}
                         </div>
                       )}
-                      {mode !== "bookmarks" && hasMore && (
-                        <div ref={sentinelRef} className="py-12 flex flex-col items-center gap-4">
-                          <div className="w-8 h-8 border-2 border-[#1a1a1a] border-t-transparent rounded-full animate-spin" />
-                          <p className="font-mono text-[10px] uppercase opacity-40">
-                            Loading more possibilities...
-                          </p>
-                        </div>
-                      )}
                     </div>
+                    {mode !== "bookmarks" && hasMore && (
+                      <div ref={sentinelRef} className="py-12 flex flex-col items-center gap-4">
+                        <div className="w-8 h-8 border-2 border-[#1a1a1a] border-t-transparent rounded-full animate-spin" />
+                        <p className="font-mono text-[10px] uppercase opacity-40">
+                          Loading more possibilities...
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

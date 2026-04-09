@@ -48,7 +48,7 @@ function LandingView() {
             <h3 className="font-serif text-xl uppercase mb-3 text-black">The Concept</h3>
             <p className="font-sans text-sm opacity-60 m-0">
               Wordloom extracts transitions from the Carnegie Mellon University Pronouncing
-              Dictionary. You provide constraints—length, prefixes, stems—and the algorithm
+              Dictionary. You provide constraints (length, prefixes, contains) and the algorithm
               calculates the most probable sequences to craft entirely new non-words.
             </p>
           </div>
