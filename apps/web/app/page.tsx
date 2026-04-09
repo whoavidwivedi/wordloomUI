@@ -54,8 +54,10 @@ function LandingView() {
           </div>
 
           <div className="grid grid-cols-2 flex-grow min-h-[140px]">
-            <Link
-              href="/docs"
+            <a
+              href="https://github.com/nrjdalal/wordloom"
+              target="_blank"
+              rel="noopener noreferrer"
               className="group p-6 lg:p-8 flex flex-col items-start justify-center border-r border-[#1a1a1a] bg-[#ecebe5] hover:bg-[#1a1a1a] hover:text-[#ecebe5] relative overflow-hidden cursor-pointer"
             >
               <div className="flex items-center gap-2 mb-2">
@@ -67,7 +69,7 @@ function LandingView() {
               <h2 className="font-serif text-2xl lg:text-3xl font-bold uppercase tracking-tight">
                 CLI Docs
               </h2>
-            </Link>
+            </a>
             <Link
               href="/studio"
               className="group p-6 lg:p-8 flex flex-col items-start justify-center bg-[#ecebe5] hover:bg-[#1a1a1a] hover:text-[#ecebe5] relative overflow-hidden cursor-pointer"

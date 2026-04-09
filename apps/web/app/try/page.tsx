@@ -117,6 +117,7 @@ export default function TryPage() {
   const [hasSearched, setHasSearched] = useState(false)
 
   const sentinelRef = useRef<HTMLDivElement>(null)
+  const resultsCache = useRef<Record<number, { results: { name: string; meaning: string }[]; hasMore: boolean; totalCount: number }>>({})
 
   useEffect(() => {
     setHasMounted(true)
@@ -177,6 +178,7 @@ export default function TryPage() {
     setHasMore(false)
     setHasSearched(true)
     setLetterOffsets({})
+    resultsCache.current = {}
 
     startTransition(async () => {
       let finalLength = length[0] ?? 5
@@ -215,6 +217,13 @@ export default function TryPage() {
       setSkip(res.results.length)
       setHasMore(res.results.length < res.count)
 
+      // Cache the first page
+      resultsCache.current[0] = {
+        results: res.results,
+        hasMore: res.results.length < res.count,
+        totalCount: res.count,
+      }
+
       if (res.results.length > 0 && res.results[0]) {
         setActiveLetter(res.results[0].name[0]?.toLowerCase() || "a")
       }
@@ -227,6 +236,26 @@ export default function TryPage() {
     const offset = letterOffsets[letter]
     if (offset === undefined || offset === -1) return
 
+    // 1. Check if already in current results (DOM check)
+    const element = document.querySelector(`[data-letter="${letter.toUpperCase()}"]`)
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" })
+      setActiveLetter(letter)
+      return
+    }
+
+    // 2. Check Cache
+    const cached = resultsCache.current[offset]
+    if (cached) {
+      setResults(cached.results)
+      setSkip(offset + cached.results.length)
+      setHasMore(cached.hasMore)
+      setTotalCount(cached.totalCount)
+      setActiveLetter(letter)
+      return
+    }
+
+    // 3. Fetch (Cache Miss)
     setResults([])
     setSkip(offset)
     setHasMore(true)
@@ -258,6 +287,13 @@ export default function TryPage() {
       setResults(res.results)
       setSkip(offset + res.results.length)
       setHasMore(offset + res.results.length < totalCount)
+
+      // Update Cache
+      resultsCache.current[offset] = {
+        results: res.results,
+        hasMore: offset + res.results.length < totalCount,
+        totalCount: totalCount,
+      }
     })
   }
 
@@ -510,12 +546,14 @@ export default function TryPage() {
                 />
                 <div className="flex justify-between items-center mt-2">
                   <p className="font-mono text-[10px] uppercase opacity-50">Press Enter to run</p>
-                  <Link
-                    href="/docs"
+                  <a
+                    href="https://github.com/nrjdalal/wordloom"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="font-mono text-[10px] uppercase text-[#1a1a1a] underline hover:opacity-70"
                   >
                     View CLI Docs
-                  </Link>
+                  </a>
                 </div>
                 {isPending && (
                   <p className="font-mono text-[10px] uppercase mt-4 text-center opacity-50 animate-pulse">
