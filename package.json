@@ -1,0 +1,70 @@
+{
+  "name": "wordloom",
+  "version": "0.3.1",
+  "description": "Find short, pronounceable names for brands, products, and projects.",
+  "keywords": [
+    "cli",
+    "cmudict",
+    "dictionary",
+    "name",
+    "name-generator",
+    "naming",
+    "phonotactics",
+    "pronounceable",
+    "word-generator",
+    "wordloom",
+    "wordnet"
+  ],
+  "homepage": "https://github.com/nrjdalal/wordloom#readme",
+  "bugs": "https://github.com/nrjdalal/wordloom/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Neeraj Dalal",
+    "email": "admin@nrjdalal.com",
+    "url": "https://nrjdalal.com"
+  },
+  "repository": "nrjdalal/wordloom",
+  "funding": "https://github.com/sponsors/nrjdalal",
+  "bin": {
+    "wordloom": "./dist/index.mjs"
+  },
+  "workspaces": [
+    "packages/*",
+    "web/*"
+  ],
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsdown && turbo run build",
+    "dev": "turbo dev --ui tui",
+    "dev:cli": "tsdown --watch",
+    "dev:web": "turbo dev --filter=@web/next --ui tui",
+    "derive:model": "node scripts/derive-cmudict-model.mjs && oxfmt bin/cmudict-model.ts bin/wordnet-definitions.ts",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint": "oxlint .",
+    "prepare": "bunx lefthook install",
+    "test": "tsdown && bun test tests/cli.test.ts"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@types/bun": "^1.3.11",
+    "@types/node": "^25.5.0",
+    "lefthook": "^2.1.4",
+    "lint-staged": "^16.4.0",
+    "oxfmt": "^0.41.0",
+    "oxlint": "^1.56.0",
+    "tsdown": "^0.21.4",
+    "turbo": "^2.9.4",
+    "typescript": "^5.9.3"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "packageManager": "bun@1.3.6"
+}

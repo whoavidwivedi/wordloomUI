@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://wordloom.nrjdalal.com/sitemap.xml
