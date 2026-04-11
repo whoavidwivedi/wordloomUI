@@ -17,11 +17,21 @@ function LandingView() {
             Name Generator
           </p>
         </div>
-        <div className="hidden text-right sm:block">
-          <p className="mb-1 font-mono text-xs uppercase opacity-40">Studio</p>
-          <div className="flex items-center justify-end gap-2">
+        <div className="hidden items-center gap-4 sm:flex">
+          <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-green-500" />
             <p className="font-sans text-sm font-semibold uppercase">Online</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-xs tracking-widest uppercase opacity-40">by Avi</span>
+            <a
+              href="https://github.com/whoavidwivedi/wordloom-studio"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="opacity-40 transition-opacity hover:opacity-100"
+            >
+              <RiGithubFill className="h-4 w-4" />
+            </a>
           </div>
         </div>
       </header>
@@ -89,19 +99,6 @@ function LandingView() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="flex shrink-0 items-center justify-end gap-3 border-t border-[#1a1a1a] px-6 py-3 lg:px-8">
-        <span className="font-mono text-xs tracking-widest uppercase opacity-40">by Avi</span>
-        <a
-          href="https://github.com/whoavidwivedi/wordloom-studio"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="opacity-40 transition-opacity hover:opacity-100"
-        >
-          <RiGithubFill className="h-4 w-4" />
-        </a>
-      </footer>
     </>
   )
 }
