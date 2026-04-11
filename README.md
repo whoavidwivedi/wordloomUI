@@ -1,147 +1,59 @@
-# wordloom
+# Wordloom Studio
 
-**Find short, pronounceable names for brands, products, and projects.**
+**A web-based studio for generating short, pronounceable names — powered by [Wordloom CLI](https://github.com/nrjdalal/wordloom).**
 
-[![Twitter](https://img.shields.io/twitter/follow/nrjdalal?label=%40nrjdalal_dev)](https://twitter.com/nrjdalal)
-[![npm](https://img.shields.io/npm/v/wordloom?color=red&logo=npm)](https://www.npmjs.com/package/wordloom)
-[![downloads](https://img.shields.io/npm/dt/wordloom?color=red&logo=npm)](https://www.npmjs.com/package/wordloom)
-[![stars](https://img.shields.io/github/stars/nrjdalal/wordloom?color=blue)](https://github.com/nrjdalal/wordloom)
-[![license](https://img.shields.io/npm/l/wordloom)](https://www.npmjs.com/package/wordloom)
+By [Avi Diwedi](https://github.com/whoavidwivedi)
 
-Every name `wordloom` generates sounds like it could be a real word — because it follows letter patterns learned from 100k+ English words. If a result _is_ a real word, you see the meaning right next to it.
+![Landing](web/next/public/screenshots/landing.png)
 
-```sh
-npx wordloom --length 6 --contains abse
-```
+## What is Wordloom Studio?
 
-```text
-┌───┬────────┬──────────────────────────────────────────────┐
-│   │ name   │ meaning                                      │
-├───┼────────┼──────────────────────────────────────────────┤
-│ 1 │ abseco │                                              │
-│ 2 │ absect │                                              │
-│ 3 │ absent │ verb: go away or leave; adjective: not      │
-│   │        │ being in a specified place                   │
-└───┴────────┴──────────────────────────────────────────────┘
-```
+Wordloom Studio is an interactive web application that puts the power of Wordloom's name generation engine into a visual interface. Instead of running CLI commands, you configure constraints through sliders and inputs, and see results instantly.
 
-## Use it to name anything
+![Studio](web/next/public/screenshots/studio.png)
 
-- **Startups and brands** — find catchy, memorable names that roll off the tongue
-- **Apps and products** — discover short names that feel polished and intentional
-- **CLI tools and libraries** — pick something developers will actually remember
-- **Side projects and domains** — explore candidates by prefix, suffix, or substring
-- **Creative writing** — generate fictional places, characters, or organizations
+### Features
 
-If a candidate already has a dictionary meaning, `wordloom` tells you — so you can decide whether that helps or hurts your brand.
+- **Visual controls** — adjust name length, prefix, suffix, and substring filters with sliders and inputs
+- **Instant results** — names generate in real-time as you tweak parameters
+- **Dictionary meanings** — real words are highlighted with their definitions from WordNet
+- **Bookmarks** — save and manage your favorite name candidates
+- **CLI mode** — toggle to a terminal-style interface if you prefer typing commands
+- **Alphabetical navigation** — jump through results by letter
+- **Dark mode** — press "d" to toggle
 
-## Wordloom Studio (Web Application)
+### How it works
 
-Wordloom also ships as a fully interactive **Wordloom Studio**. Built as a robust monolithic workspace, the Studio is designed with an emphasis on minimalist, editorial aesthetics and a premium user experience.
+Every name follows real English letter patterns learned from 100k+ words via [CMUdict](https://github.com/cmusphinx/cmudict). If a result is a real word, you see the meaning right next to it — so you can decide whether that helps or hurts your brand.
 
-### Key Studio Features:
+The generation engine is the same one that powers the [Wordloom CLI](https://github.com/nrjdalal/wordloom) — no API calls, everything runs server-side via Next.js server actions.
 
-- **Interactive UI & CLI Mode:** Toggle seamlessly between a tactile visual configuration board and an integrated browser-terminal to input constraint commands exactly like the CLI.
-- **Text-Flipping Board:** Powered by Aceternity UI, featuring beautiful 3D mechanical split-flap animations for your generated characters.
-- **Kinetic Vanta FOG Backgrounds:** A heavily customized, beautiful fluid background using WebGL (`three.js`) dynamically tracking the cursor for maximum immersion.
-- **Real-Time Next.js 15+ Rendering:** Optimized heavily via Turbopack for instantaneous computation.
-
-### Running the Studio Locally
-
-The architecture utilizes **Turborepo** and **Bun** to manage local packages and applications effortlessly.
+## Getting started
 
 ```bash
-# Clone the repository
-git clone https://github.com/whoavidwivedi/wordloomUI.git
-cd wordloomUI
-
-# Install dependencies using Bun
+git clone https://github.com/whoavidwivedi/wordloom-studio.git
+cd wordloom-studio
 bun install
-
-# Start the development server across all packages
-bun dev
+bun run dev:web
 ```
 
-Navigate to `http://localhost:3000` to dive into the Studio!
+Open [http://localhost:3000](http://localhost:3000) to use the Studio.
 
-## Quick start
+## Tech stack
+
+- **Framework** — Next.js 16, React 19, TypeScript
+- **Styling** — Tailwind CSS 4, shadcn/ui components
+- **Animation** — Motion, Vanta.js (WebGL backgrounds)
+- **Build** — Turborepo, Bun, tsdown
+- **Code quality** — oxlint, oxfmt, lefthook, commitlint
+
+## Wordloom CLI
+
+For terminal usage, check out the [Wordloom CLI](https://github.com/nrjdalal/wordloom):
 
 ```sh
-npx wordloom
-npx wordloom --prefix no
-npx wordloom --suffix ut
-npx wordloom --contains abse
 npx wordloom --length 6 --prefix abs
 ```
-
-Default length is `5`. Supported lengths are `2` through `8`.
-
-## Why wordloom?
-
-- **Pronounceable, not random** — names follow real English letter transitions derived from [CMUdict](https://github.com/cmusphinx/cmudict), so they sound natural
-- **Built-in meaning check** — real dictionary words (via WordNet) show their definitions inline
-- **Precise filtering** — lock down length, prefix, suffix, or substring to narrow your search
-- **Fast and offline** — the language model ships with the package, no API calls needed
-- **Terminal-native** — clean table output with color-highlighted dictionary matches
-
-## Install
-
-```sh
-npm install -g wordloom
-wordloom --help
-```
-
-You can also run it without installing:
-
-```sh
-npx wordloom --contains abse
-```
-
-## Options
-
-```text
--l, --length <number>         Exact name length to generate (2-8, default: 5)
--c, --contains <text>         Literal substring to require anywhere in the name
--p, --prefix <prefix>         Literal starting prefix to validate and continue from
--s, --suffix <suffix>         Literal ending suffix to require
--h, --help                    Show help
--v, --version                 Show version
-```
-
-## More examples
-
-```sh
-wordloom                              # 5-letter names
-wordloom --length 6                   # 6-letter names
-wordloom --prefix no                  # names starting with "no"
-wordloom --suffix ut                  # names ending in "ut"
-wordloom --contains abse              # names containing "abse"
-wordloom --length 6 --prefix abs      # combine filters
-wordloom --length 5 --prefix re --suffix t
-```
-
-## How it works
-
-`wordloom` learns which letters naturally follow each other in English by analyzing 100k+ words from [CMUdict](https://github.com/cmusphinx/cmudict). Every generated name walks these learned transitions, which is why results feel familiar and pronounceable — not like random character soup.
-
-Each result is also checked against [WordNet](https://wordnet.princeton.edu/). If a name happens to be a real dictionary word, the meaning is shown inline so you can make an informed choice.
-
-The language model ships pre-built with the package — no network calls, no API keys, instant results.
-
-## For maintainers
-
-Regenerating the model is only needed when refreshing the checked-in data sources:
-
-```sh
-bun install
-bun run derive:model
-bun run build
-bun test
-bun run lint
-bun run format:check
-```
-
-Generated data lives in [bin/cmudict-model.ts](./bin/cmudict-model.ts) and [bin/wordnet-definitions.ts](./bin/wordnet-definitions.ts).
 
 ## License
 
