@@ -19,7 +19,9 @@ function LandingView() {
           </div>
         </div>
         <div className="mt-3 flex items-center justify-between">
-          <p className="font-mono text-xs tracking-[0.2em] uppercase opacity-60">Studio</p>
+          <p className="font-mono text-xs tracking-[0.2em] uppercase opacity-60">
+            Studio — Powered by Wordloom CLI
+          </p>
           <div className="hidden items-center gap-1.5 sm:flex">
             <span className="font-mono text-xs tracking-widest uppercase opacity-40">
               Studio by Avi Diwedi
