@@ -1,5 +1,6 @@
 "use client"
 
+import { RiGithubFill } from "@remixicon/react"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 
@@ -17,8 +18,11 @@ function LandingView() {
           </p>
         </div>
         <div className="hidden text-right sm:block">
-          <p className="mb-1 font-mono text-xs uppercase opacity-40">Status</p>
-          <p className="font-sans text-sm font-semibold uppercase">Online</p>
+          <p className="mb-1 font-mono text-xs uppercase opacity-40">Studio</p>
+          <div className="flex items-center justify-end gap-2">
+            <span className="h-2 w-2 rounded-full bg-green-500" />
+            <p className="font-sans text-sm font-semibold uppercase">Online</p>
+          </div>
         </div>
       </header>
 
@@ -85,6 +89,19 @@ function LandingView() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="flex shrink-0 items-center justify-end gap-3 border-t border-[#1a1a1a] px-6 py-3 lg:px-8">
+        <span className="font-mono text-xs tracking-widest uppercase opacity-40">by Avi</span>
+        <a
+          href="https://github.com/whoavidwivedi/wordloom-studio"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="opacity-40 transition-opacity hover:opacity-100"
+        >
+          <RiGithubFill className="h-4 w-4" />
+        </a>
+      </footer>
     </>
   )
 }
