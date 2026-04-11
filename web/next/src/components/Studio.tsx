@@ -12,7 +12,6 @@ import {
   X,
 } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
-import Link from "next/link"
 import { memo, useCallback, useEffect, useRef, useState, useTransition } from "react"
 import { toast } from "sonner"
 
@@ -196,7 +195,6 @@ export function Studio({
   const [cliCommand, setCliCommand] = useState("wordloom -l 5")
 
   const [length, setLength] = useState([5])
-  const [isGenerating, setIsGenerating] = useState(false) // eslint-disable-line @typescript-eslint/no-unused-vars
   const [prefix, setPrefix] = useState("")
   const [suffix, setSuffix] = useState("")
   const [contains, setContains] = useState("")
@@ -214,7 +212,7 @@ export function Studio({
   const [letterOffsets, setLetterOffsets] = useState<Record<string, number>>({})
   const [activeLetter, setActiveLetter] = useState<string>("a")
   const [hasSearched, setHasSearched] = useState(false)
-  const [pendingLetter, setPendingLetter] = useState<string | null>(null)
+  const [_pendingLetter, setPendingLetter] = useState<string | null>(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   // Bookmarks State
@@ -527,7 +525,6 @@ export function Studio({
   })
 
   const displayedResults = mode === "bookmarks" ? sortedBookmarks : results
-  const displayedCount = mode === "bookmarks" ? bookmarks.length : totalCount
 
   // Alphabetical Grouping if we have many results
   const groupedResults =
