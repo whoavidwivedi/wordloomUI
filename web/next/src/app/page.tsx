@@ -25,7 +25,7 @@ function LandingView() {
       {/* Content Area */}
       <div className="grid flex-1 grid-cols-1 md:grid-cols-2">
         {/* Left Column */}
-        <div className="relative flex flex-col overflow-hidden border-r border-[#1a1a1a] bg-[#fbfaf5] p-6 lg:p-12">
+        <div className="relative flex flex-col overflow-hidden border-r border-[#1a1a1a] bg-[#fbfaf5] p-6 lg:p-8">
           <div className="flex w-full flex-1 flex-col items-center justify-center gap-6 text-center">
             <div className="h-px w-24 bg-[#1a1a1a] opacity-20" />
             <h2 className="max-w-[16ch] font-serif text-3xl leading-tight font-bold tracking-tight uppercase lg:text-5xl">
@@ -37,14 +37,14 @@ function LandingView() {
             <div className="h-px w-24 bg-[#1a1a1a] opacity-20" />
           </div>
 
-          <div className="absolute bottom-6 left-6 font-mono text-[10px] tracking-widest uppercase opacity-40 lg:bottom-12 lg:left-12">
+          <div className="absolute bottom-6 left-6 font-mono text-[10px] tracking-widest uppercase opacity-40 lg:bottom-8 lg:left-8">
             100k+ English words analyzed
           </div>
         </div>
 
         {/* Right Column */}
         <div className="flex flex-col">
-          <div className="flex flex-1 flex-col items-start justify-center border-b border-[#1a1a1a] bg-[#f8f7f2] p-6 lg:p-12">
+          <div className="flex flex-1 flex-col items-start justify-center border-b border-[#1a1a1a] bg-[#f8f7f2] p-6 lg:p-8">
             <h3 className="mb-3 font-serif text-xl text-black uppercase">How It Works</h3>
             <p className="m-0 font-sans text-sm opacity-60">
               Every name follows real English letter patterns learned from 100k+ words. If a result
