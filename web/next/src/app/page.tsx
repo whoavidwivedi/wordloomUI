@@ -10,8 +10,9 @@ function LandingView() {
       {/* Header */}
       <header className="flex shrink-0 flex-col border-b border-[#1a1a1a] p-6 lg:p-8">
         <div className="flex items-start justify-between">
-          <h1 className="font-serif text-5xl leading-none font-bold tracking-tighter uppercase lg:text-7xl">
-            Wordloom
+          <h1 className="flex items-baseline gap-2 font-serif leading-none font-bold tracking-tighter uppercase lg:gap-3">
+            <span className="text-5xl lg:text-7xl">Wordloom</span>
+            <span className="text-2xl lg:text-3xl">Studio</span>
           </h1>
           <div className="hidden items-center gap-2 sm:flex">
             <span className="h-2 w-2 rounded-full bg-green-500" />
@@ -19,7 +20,9 @@ function LandingView() {
           </div>
         </div>
         <div className="mt-3 flex items-center justify-between">
-          <p className="font-mono text-xs tracking-[0.2em] uppercase opacity-60">Studio</p>
+          <p className="font-mono text-xs tracking-[0.2em] uppercase opacity-60">
+            Powered by Wordloom CLI
+          </p>
           <div className="hidden items-center gap-1.5 sm:flex">
             <span className="font-mono text-xs tracking-widest uppercase opacity-40">
               by Avi Diwedi
