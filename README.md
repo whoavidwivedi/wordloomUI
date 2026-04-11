@@ -1,6 +1,6 @@
 # wordloom
 
-**Generate short, word-like lowercase names from real English letter patterns.**
+**Find short, pronounceable names for brands, products, and projects.**
 
 [![Twitter](https://img.shields.io/twitter/follow/nrjdalal?label=%40nrjdalal_dev)](https://twitter.com/nrjdalal)
 [![npm](https://img.shields.io/npm/v/wordloom?color=red&logo=npm)](https://www.npmjs.com/package/wordloom)
@@ -8,34 +8,11 @@
 [![stars](https://img.shields.io/github/stars/nrjdalal/wordloom?color=blue)](https://github.com/nrjdalal/wordloom)
 [![license](https://img.shields.io/npm/l/wordloom)](https://www.npmjs.com/package/wordloom)
 
-`wordloom` gives you lowercase name ideas in a clean terminal table. If a result is also a real dictionary word, it shows the meaning next to it.
-
-Good for:
-
-- naming side projects, experiments, or folders
-- exploring short word-like combinations
-- finding names that start, end, or contain a certain pattern
-- spotting real dictionary words among generated results
-
-## Quick usage
-
-```sh
-npx wordloom
-npx wordloom --prefix no
-npx wordloom --suffix ut
-npx wordloom --contains abse
-npx wordloom --length 6 --prefix abs
-```
-
-Default length is `5`. Supported lengths are `2` through `8`.
-
-Example:
+Every name `wordloom` generates sounds like it could be a real word — because it follows letter patterns learned from 100k+ English words. If a result _is_ a real word, you see the meaning right next to it.
 
 ```sh
 npx wordloom --length 6 --contains abse
 ```
-
-Output:
 
 ```text
 ┌───┬────────┬──────────────────────────────────────────────┐
@@ -48,19 +25,35 @@ Output:
 └───┴────────┴──────────────────────────────────────────────┘
 ```
 
-If nothing matches, `wordloom` prints:
+## Use it to name anything
 
-```text
-No results found.
+- **Startups and brands** — find catchy, memorable names that roll off the tongue
+- **Apps and products** — discover short names that feel polished and intentional
+- **CLI tools and libraries** — pick something developers will actually remember
+- **Side projects and domains** — explore candidates by prefix, suffix, or substring
+- **Creative writing** — generate fictional places, characters, or organizations
+
+If a candidate already has a dictionary meaning, `wordloom` tells you — so you can decide whether that helps or hurts your brand.
+
+## Quick start
+
+```sh
+npx wordloom
+npx wordloom --prefix no
+npx wordloom --suffix ut
+npx wordloom --contains abse
+npx wordloom --length 6 --prefix abs
 ```
+
+Default length is `5`. Supported lengths are `2` through `8`.
 
 ## Why wordloom?
 
-- Uses real English letter patterns derived from [CMUdict](https://github.com/cmusphinx/cmudict), instead of fully random strings
-- Adds meanings from WordNet when a generated result is also a real dictionary word
-- Supports exact length, prefix, suffix, and contains filtering
-- Prints results in alphabetical order in a readable terminal table
-- Highlights dictionary matches in color in interactive terminals
+- **Pronounceable, not random** — names follow real English letter transitions derived from [CMUdict](https://github.com/cmusphinx/cmudict), so they sound natural
+- **Built-in meaning check** — real dictionary words (via WordNet) show their definitions inline
+- **Precise filtering** — lock down length, prefix, suffix, or substring to narrow your search
+- **Fast and offline** — the language model ships with the package, no API calls needed
+- **Terminal-native** — clean table output with color-highlighted dictionary matches
 
 ## Install
 
@@ -89,27 +82,22 @@ npx wordloom --contains abse
 ## More examples
 
 ```sh
-wordloom
-wordloom --length 6
-wordloom --contains abse
-wordloom --prefix no
-wordloom --suffix ut
-wordloom --length 6 --prefix abs
+wordloom                              # 5-letter names
+wordloom --length 6                   # 6-letter names
+wordloom --prefix no                  # names starting with "no"
+wordloom --suffix ut                  # names ending in "ut"
+wordloom --contains abse              # names containing "abse"
+wordloom --length 6 --prefix abs      # combine filters
 wordloom --length 5 --prefix re --suffix t
 ```
 
 ## How it works
 
-`wordloom` is source-backed, but the idea is simple:
+`wordloom` learns which letters naturally follow each other in English by analyzing 100k+ words from [CMUdict](https://github.com/cmusphinx/cmudict). Every generated name walks these learned transitions, which is why results feel familiar and pronounceable — not like random character soup.
 
-- it learns allowed letter transitions from CMUdict
-- it generates names that follow those learned patterns
-- it looks up each generated result in WordNet
-- if the result is a real dictionary lemma, it shows the meaning
+Each result is also checked against [WordNet](https://wordnet.princeton.edu/). If a name happens to be a real dictionary word, the meaning is shown inline so you can make an informed choice.
 
-That means the results are more word-like than random strings, but they are not guaranteed to be common words, proper names, or brand-safe names.
-
-The checked-in generated model files already ship with the repo and the published package, so normal users do not need to run `bun run derive:model`.
+The language model ships pre-built with the package — no network calls, no API keys, instant results.
 
 ## For maintainers
 

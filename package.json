@@ -1,7 +1,7 @@
 {
   "name": "wordloom",
-  "version": "0.3.0",
-  "description": "Generate short, word-like lowercase names and show meanings for dictionary matches.",
+  "version": "0.3.1",
+  "description": "Find short, pronounceable names for brands, products, and projects.",
   "keywords": [
     "cli",
     "cmudict",
