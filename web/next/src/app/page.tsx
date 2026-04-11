@@ -17,12 +17,12 @@ function LandingView() {
             Name Generator
           </p>
         </div>
-        <div className="hidden items-center gap-4 sm:flex">
-          <div className="flex items-center gap-2">
+        <div className="hidden text-right sm:block">
+          <div className="mb-1 flex items-center justify-end gap-2">
             <span className="h-2 w-2 rounded-full bg-green-500" />
             <p className="font-sans text-sm font-semibold uppercase">Online</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-end gap-2">
             <span className="font-mono text-xs tracking-widest uppercase opacity-40">by Avi</span>
             <a
               href="https://github.com/whoavidwivedi/wordloom-studio"
