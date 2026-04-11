@@ -8,29 +8,29 @@ function LandingView() {
   return (
     <>
       {/* Header */}
-      <header className="flex shrink-0 items-start justify-between border-b border-[#1a1a1a] p-6 lg:p-8">
-        <div>
+      <header className="flex shrink-0 flex-col border-b border-[#1a1a1a] p-6 lg:p-8">
+        <div className="flex items-start justify-between">
           <h1 className="font-serif text-5xl leading-none font-bold tracking-tighter uppercase lg:text-7xl">
             Wordloom
           </h1>
-          <p className="mt-3 font-mono text-xs tracking-[0.2em] uppercase opacity-60">
-            Name Generator
-          </p>
-        </div>
-        <div className="hidden text-right sm:block">
-          <div className="mb-1 flex items-center justify-end gap-2">
+          <div className="hidden items-center gap-2 sm:flex">
             <span className="h-2 w-2 rounded-full bg-green-500" />
             <p className="font-sans text-sm font-semibold uppercase">Online</p>
           </div>
-          <div className="flex items-center justify-end gap-2">
-            <span className="font-mono text-xs tracking-widest uppercase opacity-40">by Avi</span>
+        </div>
+        <div className="mt-3 flex items-center justify-between">
+          <p className="font-mono text-xs tracking-[0.2em] uppercase opacity-60">Name Generator</p>
+          <div className="hidden items-center gap-1.5 sm:flex">
+            <span className="font-mono text-xs tracking-widest uppercase opacity-40">
+              by Avi Diwedi
+            </span>
             <a
               href="https://github.com/whoavidwivedi/wordloom-studio"
               target="_blank"
               rel="noopener noreferrer"
               className="opacity-40 transition-opacity hover:opacity-100"
             >
-              <RiGithubFill className="h-4 w-4" />
+              <RiGithubFill className="h-3.5 w-3.5" />
             </a>
           </div>
         </div>
