@@ -10,9 +10,9 @@ function LandingView() {
       {/* Header */}
       <header className="flex shrink-0 flex-col border-b border-[#1a1a1a] p-6 lg:p-8">
         <div className="flex items-start justify-between">
-          <h1 className="font-serif leading-none font-bold tracking-tighter uppercase">
+          <h1 className="flex items-baseline gap-2 font-serif leading-none font-bold tracking-tighter uppercase lg:gap-3">
             <span className="text-5xl lg:text-7xl">Wordloom</span>
-            <span className="mt-1 block text-2xl lg:text-3xl">Studio</span>
+            <span className="pt-0.5 text-2xl lg:text-3xl">Studio</span>
           </h1>
           <div className="hidden items-center gap-2 sm:flex">
             <span className="h-2 w-2 rounded-full bg-green-500" />
